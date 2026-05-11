@@ -5,9 +5,10 @@
 #include <cstdio>
 
 extern bool use_fused;
+double results[2] = {0.0, 0.0};  // [0]=unfused, [1]=fused
+double tokens_per_sec = 0.0;
 
 int main(int argc, char** argv) {
-    printf("mode: %s\n", use_fused ? "fused" : "unfused");
     std::string data_path = "inp.txt";
     int num_epochs = 10;
     int max_steps = -1;
@@ -82,6 +83,16 @@ int main(int argc, char** argv) {
         model.free_all();
         model.build(cfg);
         model.init_weights(42);
+        // warmup loop for better timing
+        for (int i = 0; i < 5; ++i) {
+            int* d_tokens = d_all_inputs;
+            int* d_targets = d_all_targets;
+
+            model.zero_grad();
+            model.forward_no_sync(d_tokens, d_targets);
+            model.backward();
+        }
+        CUDA_CHECK(cudaDeviceSynchronize());
         for (int epoch = 0; epoch < num_epochs; ++epoch) {
             float loss = 0.0f;
             auto t0 = std::chrono::high_resolution_clock::now();
@@ -104,11 +115,19 @@ int main(int argc, char** argv) {
             CUDA_CHECK(cudaDeviceSynchronize());
             auto t1 = std::chrono::high_resolution_clock::now();
             double ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
-            double tokens_per_sec = (double)steps_per_epoch * (double)BT / (ms / 1000.0);
+            tokens_per_sec = (double)steps_per_epoch * (double)BT / (ms / 1000.0);
+            
             printf("epoch %d: %.0f ms, %.0f tok/s, loss %.4f\n",
                 epoch + 1, ms, tokens_per_sec, loss);
         }
+        results[mode] = tokens_per_sec;
+        printf("RESULT (%s): %.0f tok/s\n", use_fused ? "FUSED" : "UNFUSED", tokens_per_sec);
 }
+
+    printf("\n========== FINAL COMPARISON ==========\n");
+    printf("UNFUSED: %.0f tok/s\n", results[0]);
+    printf("FUSED:   %.0f tok/s\n", results[1]);
+    printf("SPEEDUP: %.2fx\n", results[1] / results[0]);
 
     cudaFree(d_all_inputs);
     cudaFree(d_all_targets);
