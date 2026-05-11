@@ -2,6 +2,10 @@
 #include "model.h"
 #include "distributed.h"
 
+
+
+bool use_fused = true;
+
 __global__ void init_weights_kernel(float* data, int n, float scale,
                                     unsigned seed) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -222,16 +226,43 @@ float TransformerModel::forward(const int* tokens, const int* targets) {
 
     gemm_tiled(act.attn_out.data, block.Wo.data, act.attn_proj.data, BT, D, D);
 
-    residual_layernorm_forward_save(act.embedded.data, act.attn_proj.data,
-                                    block.ln2_gamma.data, block.ln2_beta.data,
-                                    act.residual1.data, act.ln2_out.data,
-                                    act.ln2_mean.data, act.ln2_inv_std.data,
-                                    BT, D);
+    if (use_fused) {
+    residual_layernorm_forward_save(
+        act.embedded.data, act.attn_proj.data,
+        block.ln2_gamma.data, block.ln2_beta.data,
+        act.residual1.data, act.ln2_out.data,
+        act.ln2_mean.data, act.ln2_inv_std.data,
+        BT, D);
+    } else {
+        residual_add(act.embedded.data, act.attn_proj.data,
+                    act.residual1.data, BT * D);
+
+        layernorm_forward_save(
+            act.residual1.data,
+            block.ln2_gamma.data, block.ln2_beta.data,
+            act.ln2_out.data,
+            act.ln2_mean.data, act.ln2_inv_std.data,
+            BT, D);
+    }
+
+    // residual_layernorm_forward_save(act.embedded.data, act.attn_proj.data,
+    //                                 block.ln2_gamma.data, block.ln2_beta.data,
+    //                                 act.residual1.data, act.ln2_out.data,
+    //                                 act.ln2_mean.data, act.ln2_inv_std.data,
+    //                                 BT, D);
 
     gemm_tiled(act.ln2_out.data, block.W1.data, act.ff_hidden.data,
                BT, cfg.ff_dim, D);
-    bias_relu_forward(act.ff_hidden.data, block.b1.data, act.ff_relu.data,
-                      BT, cfg.ff_dim);
+    // bias_relu_forward(act.ff_hidden.data, block.b1.data, act.ff_relu.data, BT, cfg.ff_dim);
+    if (use_fused) {
+    bias_relu_forward(
+        act.ff_hidden.data, block.b1.data,
+        act.ff_relu.data, BT, cfg.ff_dim);
+    } else {
+        bias_add(act.ff_hidden.data, block.b1.data, BT, cfg.ff_dim);
+        relu_forward(act.ff_hidden.data, act.ff_relu.data, BT * cfg.ff_dim);
+    }
+    
 
     gemm_tiled(act.ff_relu.data, block.W2.data, act.ff_out.data,
                BT, D, cfg.ff_dim);
@@ -270,18 +301,44 @@ void TransformerModel::forward_no_sync(const int* tokens, const int* targets) {
                    act.attn_out.data, act.attn_P.data, B * H, T, HD);
 
     gemm_tiled(act.attn_out.data, block.Wo.data, act.attn_proj.data, BT, D, D);
+    if (use_fused) {
+    residual_layernorm_forward_save(
+        act.embedded.data, act.attn_proj.data,
+        block.ln2_gamma.data, block.ln2_beta.data,
+        act.residual1.data, act.ln2_out.data,
+        act.ln2_mean.data, act.ln2_inv_std.data,
+        BT, D);
+    } else {
+        residual_add(act.embedded.data, act.attn_proj.data,
+                    act.residual1.data, BT * D);
 
-    residual_layernorm_forward_save(act.embedded.data, act.attn_proj.data,
-                                    block.ln2_gamma.data, block.ln2_beta.data,
-                                    act.residual1.data, act.ln2_out.data,
-                                    act.ln2_mean.data, act.ln2_inv_std.data,
-                                    BT, D);
+        layernorm_forward_save(
+            act.residual1.data,
+            block.ln2_gamma.data, block.ln2_beta.data,
+            act.ln2_out.data,
+            act.ln2_mean.data, act.ln2_inv_std.data,
+            BT, D);
+    }
+
+    // residual_layernorm_forward_save(act.embedded.data, act.attn_proj.data,
+    //                                 block.ln2_gamma.data, block.ln2_beta.data,
+    //                                 act.residual1.data, act.ln2_out.data,
+    //                                 act.ln2_mean.data, act.ln2_inv_std.data,
+    //                                 BT, D);
 
     gemm_tiled(act.ln2_out.data, block.W1.data, act.ff_hidden.data,
                BT, cfg.ff_dim, D);
-    bias_relu_forward(act.ff_hidden.data, block.b1.data, act.ff_relu.data,
-                      BT, cfg.ff_dim);
-
+    // bias_relu_forward(act.ff_hidden.data, block.b1.data, act.ff_relu.data,
+    //                   BT, cfg.ff_dim);
+    if (use_fused) {
+    bias_relu_forward(
+        act.ff_hidden.data, block.b1.data,
+        act.ff_relu.data, BT, cfg.ff_dim);
+    } else {
+        bias_add(act.ff_hidden.data, block.b1.data, BT, cfg.ff_dim);
+        relu_forward(act.ff_hidden.data, act.ff_relu.data, BT * cfg.ff_dim);
+    }
+    
     gemm_tiled(act.ff_relu.data, block.W2.data, act.ff_out.data,
                BT, D, cfg.ff_dim);
     bias_add(act.ff_out.data, block.b2.data, BT, D);

@@ -4,7 +4,10 @@
 #include "model.h"
 #include <cstdio>
 
+extern bool use_fused;
+
 int main(int argc, char** argv) {
+    printf("mode: %s\n", use_fused ? "fused" : "unfused");
     std::string data_path = "inp.txt";
     int num_epochs = 10;
     int max_steps = -1;
@@ -47,8 +50,8 @@ int main(int argc, char** argv) {
         fprintf(stderr, "not enough data for one batch\n");
         return 1;
     }
-
-    printf("vocab=%d tokens=%zu\n", tokenizer.vocab_size, tokenizer.encode(text).size());
+    auto tokens = tokenizer.encode(text);
+    printf("vocab=%d tokens=%zu\n", tokenizer.vocab_size, tokens.size());
     printf("model: seq=%d hidden=%d heads=%d ff=%d batch=%d params=%d\n",
            cfg.seq_len, cfg.hidden_dim, cfg.num_heads, cfg.ff_dim,
            cfg.batch_size, model.total_param_count);
@@ -71,35 +74,41 @@ int main(int argc, char** argv) {
     CUDA_CHECK(cudaMalloc(&d_all_targets, num_batches * BT * sizeof(int)));
     CUDA_CHECK(cudaMemcpy(d_all_inputs, all_inputs.data(),
                           num_batches * BT * sizeof(int), cudaMemcpyHostToDevice));
-    CUDA_CHECK(cudaMemcpy(d_all_targets, all_targets.data(),
-                          num_batches * BT * sizeof(int), cudaMemcpyHostToDevice));
+    CUDA_CHECK(cudaMemcpy(d_all_targets, all_targets.data(),num_batches * BT * sizeof(int), cudaMemcpyHostToDevice));
 
-    for (int epoch = 0; epoch < num_epochs; ++epoch) {
-        float loss = 0.0f;
-        auto t0 = std::chrono::high_resolution_clock::now();
+    for (int mode = 0; mode < 2; ++mode) {
+        use_fused = (mode == 1);
+        printf("\n===== RUN: %s =====\n", use_fused ? "FUSED" : "UNFUSED");
+        model.free_all();
+        model.build(cfg);
+        model.init_weights(42);
+        for (int epoch = 0; epoch < num_epochs; ++epoch) {
+            float loss = 0.0f;
+            auto t0 = std::chrono::high_resolution_clock::now();
 
-        for (int step = 0; step < steps_per_epoch; ++step) {
-            int* d_tokens = d_all_inputs + step * BT;
-            int* d_targets = d_all_targets + step * BT;
+            for (int step = 0; step < steps_per_epoch; ++step) {
+                int* d_tokens = d_all_inputs + step * BT;
+                int* d_targets = d_all_targets + step * BT;
 
-            model.zero_grad();
-            model.forward_no_sync(d_tokens, d_targets);
-            model.backward();
-            model.update_adam(lr);
+                model.zero_grad();
+                model.forward_no_sync(d_tokens, d_targets);
+                model.backward();
+                model.update_adam(lr);
 
-            if ((step + 1) % 100 == 0 || step + 1 == steps_per_epoch) {
-                loss = model.read_loss();
-                printf("step %d/%d loss %.4f\n", step + 1, steps_per_epoch, loss);
+                if ((step + 1) % 100 == 0 || step + 1 == steps_per_epoch) {
+                    loss = model.read_loss();
+                    printf("step %d/%d loss %.4f\n", step + 1, steps_per_epoch, loss);
+                }
             }
-        }
 
-        CUDA_CHECK(cudaDeviceSynchronize());
-        auto t1 = std::chrono::high_resolution_clock::now();
-        double ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
-        double tokens_per_sec = (double)steps_per_epoch * (double)BT / (ms / 1000.0);
-        printf("epoch %d: %.0f ms, %.0f tok/s, loss %.4f\n",
-               epoch + 1, ms, tokens_per_sec, loss);
-    }
+            CUDA_CHECK(cudaDeviceSynchronize());
+            auto t1 = std::chrono::high_resolution_clock::now();
+            double ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
+            double tokens_per_sec = (double)steps_per_epoch * (double)BT / (ms / 1000.0);
+            printf("epoch %d: %.0f ms, %.0f tok/s, loss %.4f\n",
+                epoch + 1, ms, tokens_per_sec, loss);
+        }
+}
 
     cudaFree(d_all_inputs);
     cudaFree(d_all_targets);

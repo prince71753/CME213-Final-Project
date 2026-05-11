@@ -21,12 +21,14 @@ TEST_ATTN := $(BUILD_DIR)/test_attention
 TEST_LN := $(BUILD_DIR)/test_layernorm
 TEST_MODEL := $(BUILD_DIR)/test_model_reference
 TEST_FUSION := $(BUILD_DIR)/test_fusion_benchmark
+TEST_EMBEDDING := $(BUILD_DIR)/test_embedding
+TEST_SOFTMAX_CE := $(BUILD_DIR)/test_softmax_ce
 
 .PHONY: all tests clean
 
 all: $(TARGET)
 
-tests: $(TEST_GEMM) $(TEST_ATTN) $(TEST_LN) $(TEST_MODEL) $(TEST_FUSION)
+tests: $(TEST_GEMM) $(TEST_ATTN) $(TEST_LN) $(TEST_MODEL) $(TEST_FUSION) $(TEST_EMBEDDING) $(TEST_SOFTMAX_CE)
 
 $(TARGET): $(KERNEL_OBJS) $(MODEL_OBJS) $(DATA_OBJS) $(MAIN_OBJ) | $(BUILD_DIR)
 	$(NVCC) $(NVCC_FLAGS) -o $@ $^
@@ -55,6 +57,12 @@ $(TEST_MODEL): tests/test_model_reference.cu $(KERNEL_OBJS) $(MODEL_OBJS) | $(BU
 	$(NVCC) $(NVCC_FLAGS) -o $@ $^
 
 $(TEST_FUSION): tests/test_fusion_benchmark.cu $(KERNEL_OBJS) | $(BUILD_DIR)
+	$(NVCC) $(NVCC_FLAGS) -o $@ $^
+
+$(TEST_EMBEDDING): tests/test_embedding.cu $(KERNEL_OBJS) | $(BUILD_DIR)
+	$(NVCC) $(NVCC_FLAGS) -o $@ $^
+
+$(TEST_SOFTMAX_CE): tests/test_softmax_ce.cu $(KERNEL_OBJS) | $(BUILD_DIR)
 	$(NVCC) $(NVCC_FLAGS) -o $@ $^
 
 clean:

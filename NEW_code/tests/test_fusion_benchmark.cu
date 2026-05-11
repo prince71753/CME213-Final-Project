@@ -19,6 +19,22 @@ static float max_abs_diff(const std::vector<float>& a,
     return d;
 }
 
+static void report_bandwidth(const char* name, float ms, long long bytes_unfused,
+                             long long bytes_fused, float speedup) {
+    printf("  [%s]\n", name);
+    float bw_unfused = bytes_unfused / (ms / 1e3f) / 1e9f;
+    float bw_fused = bytes_fused / (ms / 1e3f) / 1e9f;
+    // Theoretical speedup based on memory reduction
+    float theoretical_speedup = ((float)bytes_unfused) / bytes_fused;
+    printf("    bandwidth unfused: %.2f GB/s | fused: %.2f GB/s\n",
+       bw_unfused, bw_fused);
+    printf("    memory unfused: %.1f MB | fused: %.1f MB (%.1f%% reduction)\n",
+           bytes_unfused / 1e6f, bytes_fused / 1e6f,
+           (1.0f - (float)bytes_fused / bytes_unfused) * 100.0f);
+    printf("    achieved speedup: %.2fx | theoretical (mem-bound): %.2fx\n",
+           speedup, theoretical_speedup);
+}
+
 static float time_bias_relu_unfused(float* d_work, const float* d_bias,
                                     float* d_out, int rows, int cols,
                                     int iters) {
@@ -72,8 +88,10 @@ static bool test_bias_relu() {
     bias_add(d_unfused_work, d_bias, rows, cols);
     relu_forward(d_unfused_work, d_unfused, n);
     bias_relu_forward(d_fused_work, d_bias, d_fused, rows, cols);
+    CUDA_CHECK(cudaGetLastError());
 
     std::vector<float> h_unfused(n), h_fused(n);
+    CUDA_CHECK(cudaDeviceSynchronize());
     CUDA_CHECK(cudaMemcpy(h_unfused.data(), d_unfused, n * sizeof(float), cudaMemcpyDeviceToHost));
     CUDA_CHECK(cudaMemcpy(h_fused.data(), d_fused, n * sizeof(float), cudaMemcpyDeviceToHost));
     float err = max_abs_diff(h_unfused, h_fused);
@@ -85,8 +103,13 @@ static bool test_bias_relu() {
 
     printf("  bias+ReLU rows=%d cols=%d err=%.3e %s\n",
            rows, cols, err, err < 1e-6f ? "PASS" : "FAIL");
-    printf("    unfused %.4f ms | fused %.4f ms | speedup %.2fx\n",
-           ms_unfused, ms_fused, ms_unfused / ms_fused);
+    printf("    unfused %.4f ms | fused %.4f ms | speedup %.2fx\n", ms_unfused, ms_fused, ms_unfused / ms_fused);
+    
+        
+    long long bytes_unfused = 4LL * n * sizeof(float);
+    long long bytes_fused   = 2LL * n * sizeof(float);
+    report_bandwidth("bias+ReLU", ms_unfused, bytes_unfused, bytes_fused, ms_unfused / ms_fused);
+
 
     cudaFree(d_base); cudaFree(d_unfused_work); cudaFree(d_fused_work);
     cudaFree(d_bias); cudaFree(d_unfused); cudaFree(d_fused);
@@ -184,6 +207,11 @@ static bool test_residual_layernorm_forward() {
            (res_err < 1e-6f && out_err < 1e-5f) ? "PASS" : "FAIL");
     printf("    unfused %.4f ms | fused %.4f ms | speedup %.2fx\n",
            ms_unfused, ms_fused, ms_unfused / ms_fused);
+
+    long long bytes_unfused = 4LL * n * sizeof(float) + 2LL * cols * sizeof(float);
+    long long bytes_fused   = 3LL * n * sizeof(float) + 2LL * cols * sizeof(float);
+    report_bandwidth("residual+LayerNorm", ms_unfused, bytes_unfused, bytes_fused, ms_unfused / ms_fused);
+    
 
     cudaFree(d_a); cudaFree(d_b); cudaFree(d_gamma); cudaFree(d_beta);
     cudaFree(d_res_u); cudaFree(d_out_u); cudaFree(d_mean_u); cudaFree(d_inv_u);
