@@ -126,4 +126,7 @@ struct TransformerModel {
     void update_adam(float lr, float beta1 = 0.9f, float beta2 = 0.999f,
                      float eps = 1e-8f);
     void free_all();
+    float* get_grad_ptr() { return d_all_grads; }
+    int get_grad_size() { return total_param_count; }
+    float* get_param_ptr() { return d_all_params; }
 };

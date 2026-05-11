@@ -3,12 +3,24 @@
 #include "data.h"
 #include "model.h"
 #include <cstdio>
+#include "distributed.h"
 
 extern bool use_fused;
 double results[2] = {0.0, 0.0};  // [0]=unfused, [1]=fused
 double tokens_per_sec = 0.0;
 
 int main(int argc, char** argv) {
+    DistributedContext dist;
+    dist.init(&argc, &argv);
+    if (dist.is_root()) {
+        printf("Running with %d ranks\n", dist.world_size);
+    }
+    cudaSetDevice(dist.rank);
+
+
+
+
+
     std::string data_path = "inp.txt";
     int num_epochs = 10;
     int max_steps = -1;
@@ -42,12 +54,15 @@ int main(int argc, char** argv) {
 
     int BT = cfg.batch_size * cfg.seq_len;
     int num_batches = dataset.num_batches();
-    int steps_per_epoch = num_batches;
-    if (max_steps > 0 && max_steps < steps_per_epoch) {
-        steps_per_epoch = max_steps;
+    int total_steps = num_batches;
+    if (max_steps > 0 && max_steps < total_steps) {
+        total_steps = max_steps;
     }
 
-    if (steps_per_epoch <= 0) {
+    int local_batches = total_steps / dist.world_size;
+    int start_batch = dist.rank * local_batches;
+
+    if (total_steps <= 0) {
         fprintf(stderr, "not enough data for one batch\n");
         return 1;
     }
@@ -56,7 +71,7 @@ int main(int argc, char** argv) {
     printf("model: seq=%d hidden=%d heads=%d ff=%d batch=%d params=%d\n",
            cfg.seq_len, cfg.hidden_dim, cfg.num_heads, cfg.ff_dim,
            cfg.batch_size, model.total_param_count);
-    printf("run: epochs=%d steps=%d lr=%.1e\n", num_epochs, steps_per_epoch, lr);
+    printf("run: epochs=%d steps=%d lr=%.1e\n", num_epochs, total_steps, lr);
 
     std::vector<int> all_inputs(num_batches * BT);
     std::vector<int> all_targets(num_batches * BT);
@@ -85,40 +100,57 @@ int main(int argc, char** argv) {
         model.init_weights(42);
         // warmup loop for better timing
         for (int i = 0; i < 5; ++i) {
-            int* d_tokens = d_all_inputs;
-            int* d_targets = d_all_targets;
+            int* d_tokens  = d_all_inputs  + start_batch * BT;
+            int* d_targets = d_all_targets + start_batch * BT;
 
             model.zero_grad();
             model.forward_no_sync(d_tokens, d_targets);
             model.backward();
         }
         CUDA_CHECK(cudaDeviceSynchronize());
+
         for (int epoch = 0; epoch < num_epochs; ++epoch) {
             float loss = 0.0f;
             auto t0 = std::chrono::high_resolution_clock::now();
 
-            for (int step = 0; step < steps_per_epoch; ++step) {
-                int* d_tokens = d_all_inputs + step * BT;
-                int* d_targets = d_all_targets + step * BT;
+            for (int step = 0; step < local_batches; ++step) {
+                int global_step = start_batch + step;
+                int* d_tokens  = d_all_inputs  + global_step * BT;
+                int* d_targets = d_all_targets + global_step * BT;
 
                 model.zero_grad();
                 model.forward_no_sync(d_tokens, d_targets);
                 model.backward();
+                dist.sync_gradients(model.get_grad_ptr(),model.get_grad_size());
+                
                 model.update_adam(lr);
+                bool ok = dist.verify_parameter_consistency(
+                    model.get_param_ptr(),
+                    model.total_param_count
+                );
+                
+                if (!ok) {
+                    printf("Rank %d: PARAMETER MISMATCH!\n", dist.rank);
+                }
+            
+                dist.barrier();
 
-                if ((step + 1) % 100 == 0 || step + 1 == steps_per_epoch) {
+                if ((step + 1) % 100 == 0 || step + 1 == local_batches) {
                     loss = model.read_loss();
-                    printf("step %d/%d loss %.4f\n", step + 1, steps_per_epoch, loss);
+                    if (dist.is_root()) {
+                    printf("step %d/%d loss %.4f\n", step + 1, local_batches, loss);
+                }
                 }
             }
 
             CUDA_CHECK(cudaDeviceSynchronize());
             auto t1 = std::chrono::high_resolution_clock::now();
             double ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
-            tokens_per_sec = (double)steps_per_epoch * (double)BT / (ms / 1000.0);
-            
+            tokens_per_sec = (double)local_batches * (double)BT * dist.world_size / (ms / 1000.0);
+            if (dist.is_root()) {
             printf("epoch %d: %.0f ms, %.0f tok/s, loss %.4f\n",
                 epoch + 1, ms, tokens_per_sec, loss);
+            }
         }
         results[mode] = tokens_per_sec;
         printf("RESULT (%s): %.0f tok/s\n", use_fused ? "FUSED" : "UNFUSED", tokens_per_sec);
@@ -128,7 +160,7 @@ int main(int argc, char** argv) {
     printf("UNFUSED: %.0f tok/s\n", results[0]);
     printf("FUSED:   %.0f tok/s\n", results[1]);
     printf("SPEEDUP: %.2fx\n", results[1] / results[0]);
-
+    dist.finalize();
     cudaFree(d_all_inputs);
     cudaFree(d_all_targets);
     model.free_all();
