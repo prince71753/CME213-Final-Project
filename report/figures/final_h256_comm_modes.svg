@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="460" viewBox="0 0 820 460">
+<rect width="100%" height="100%" fill="white"/>
+<text x="410.0" y="30" text-anchor="middle" font-family="Arial" font-size="18" font-weight="700">h256 four-gpu communication modes</text>
+<text x="18" y="211.0" transform="rotate(-90 18 211.0)" text-anchor="middle" font-family="Arial" font-size="13">throughput (m tokens/s)</text>
+<line x1="88" y1="58" x2="88" y2="364" stroke="#111827"/>
+<line x1="88" y1="364" x2="792" y2="364" stroke="#111827"/>
+<line x1="83" y1="364.0" x2="792" y2="364.0" stroke="#e5e7eb"/>
+<text x="78" y="368.0" text-anchor="end" font-family="Arial" font-size="11">0.00</text>
+<line x1="83" y1="287.5" x2="792" y2="287.5" stroke="#e5e7eb"/>
+<text x="78" y="291.5" text-anchor="end" font-family="Arial" font-size="11">0.67</text>
+<line x1="83" y1="211.0" x2="792" y2="211.0" stroke="#e5e7eb"/>
+<text x="78" y="215.0" text-anchor="end" font-family="Arial" font-size="11">1.34</text>
+<line x1="83" y1="134.5" x2="792" y2="134.5" stroke="#e5e7eb"/>
+<text x="78" y="138.5" text-anchor="end" font-family="Arial" font-size="11">2.01</text>
+<line x1="83" y1="58.0" x2="792" y2="58.0" stroke="#e5e7eb"/>
+<text x="78" y="62.0" text-anchor="end" font-family="Arial" font-size="11">2.68</text>
+<rect x="112.0" y="190.7" width="202.7" height="173.3" fill="#7c3aed"/>
+<text x="213.3" y="184.7" text-anchor="middle" font-family="Arial" font-size="11">1.516</text>
+<text x="213.3" y="386" text-anchor="middle" font-family="Arial" font-size="11">direct blocking</text>
+<rect x="338.7" y="128.9" width="202.7" height="235.1" fill="#7c3aed"/>
+<text x="440.0" y="122.9" text-anchor="middle" font-family="Arial" font-size="11">2.057</text>
+<text x="440.0" y="386" text-anchor="middle" font-family="Arial" font-size="11">pinned overlap</text>
+<rect x="565.3" y="104.7" width="202.7" height="259.3" fill="#7c3aed"/>
+<text x="666.7" y="98.7" text-anchor="middle" font-family="Arial" font-size="11">2.269</text>
+<text x="666.7" y="386" text-anchor="middle" font-family="Arial" font-size="11">openmp overlap</text>
+</svg>

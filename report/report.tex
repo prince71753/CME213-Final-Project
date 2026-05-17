@@ -1,0 +1,80 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+\title{Communication-Aware CUDA and MPI Training for a Mini-Transformer}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Introduction and Motivation}
+Training modern neural networks is usually presented through high-level
+frameworks, but the performance-critical work underneath is a tightly coupled
+systems problem.  Each training step mixes dense matrix multiplication,
+memory-bound elementwise kernels, reductions, optimizer updates, and, in the
+distributed case, gradient communication.  The goal of this project is to make
+those interactions visible by building and optimizing a mini-Transformer
+training system directly in CUDA and MPI.  The model is intentionally small
+enough to understand end to end, but it contains the same bottleneck classes as
+larger production systems: attention, feed-forward GEMMs, LayerNorm, softmax,
+embedding lookups, Adam, and data-parallel allreduce.
+
+Our starting point was a fully custom CUDA implementation with MPI data
+parallelism.  This baseline was useful because every operation had a clear
+owner: if a kernel was slow, we could inspect its memory traffic, launch
+geometry, and synchronization behavior directly.  The first major optimization
+was to replace the largest GEMMs with cuBLAS and then with Tensor Core GEMMs
+using FP32 inputs and FP32 accumulation with fast FP16 internal math.  This
+changed the performance profile substantially.  At larger hidden sizes the
+GEMMs became much faster, while the remaining LayerNorm, activation, softmax,
+and Adam kernels became a larger fraction of step time.  This is the central
+theme of the project: each successful optimization changes the bottleneck, so
+the next decision must be made from fresh measurements rather than from a fixed
+intuition about what should be slow.
+
+The distributed results add another layer.  On four GPUs, gradient
+synchronization can dominate the small models even when the single-GPU kernels
+are efficient.  We therefore evaluate blocking allreduce, bucketed overlap,
+backend selection, and communication noise carefully.  One surprising result is
+that the best H128 backend differs between single-GPU and four-GPU execution:
+Tensor Core cuBLAS wins on one GPU, while the custom CUDA kernels win in the
+four-GPU MPI setting.  Profiling shows that the Tensor Core path reduces GPU
+kernel time, but for the small per-rank H128 distributed workload its fixed
+runtime and synchronization overheads outweigh the compute advantage.  This
+kind of crossover is exactly why the project emphasizes measurement rather
+than treating any library or fusion strategy as automatically better.
+
+The final objective is not only to make the code faster, but to explain why
+each optimization worked, failed, or remained inconclusive.  Negative results
+are part of that story: cuBLASLt epilogue fusion was slower for these shapes,
+CUDA Graphs provided limited benefit while the GPU was already busy, and some
+MPI overlap strategies were limited by host staging and variance.  By combining
+correctness tests, repeated benchmarks, Nsight Systems and Nsight Compute
+profiles, and a roofline analysis, this report presents a performance
+engineering narrative for CUDA and MPI training that is small enough to audit
+but rich enough to expose real architectural tradeoffs.
+
+\section{System Architecture}
+% May 15 target: 500 words.
+
+\section{Correctness Methodology}
+% May 16 target: 500 words.
+
+\section{Benchmarking Methodology}
+% May 17 target: 500 words.
+
+\section{Single-GPU Optimization Results}
+
+\section{Distributed Optimization Results}
+
+\section{Roofline and Bottleneck Analysis}
+
+\section{Discussion and Limitations}
+
+\section{Conclusion}
+
+\end{document}
