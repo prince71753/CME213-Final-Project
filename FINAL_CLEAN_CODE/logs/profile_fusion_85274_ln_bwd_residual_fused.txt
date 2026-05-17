@@ -1,0 +1,8 @@
+==PROF== Connected to process 591357 (/home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/build_profile_85274/profile_fusion_kernels)
+==PROF== Profiling "layernorm_backward_dx_kernel" - 0: 0%....50%....100% - 36 passes
+==PROF== Profiling "layernorm_backward_dweight_ke..." - 1: 0%....50%....100% - 36 passes
+check ln_bwd_residual res_abs=5.960e-08 dgamma_abs=0.000e+00 dbeta_abs=0.000e+00 PASS
+PROFILE_CASE ln_bwd_residual_fused rows=2048 cols=128
+PROFILE_TIMING case=ln_bwd_residual_fused runtime_us=2719201.250 estimated_read_bytes=7340032 estimated_write_bytes=3145728 estimated_total_bytes=10485760 estimated_effective_bw_gbs=0.00
+==PROF== Disconnected from process 591357
+==PROF== Report: /home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/profiles/fusion_ln_bwd_residual_fused_85274.ncu-rep

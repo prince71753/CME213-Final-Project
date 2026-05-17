@@ -1,0 +1,7 @@
+=== Attention Correctness & Performance Test ===
+
+BH=4, seq=64, head_dim=32
+  naive  max error: 4.470348e-08  PASS
+  tiled  max error: 7.450581e-08  PASS
+  naive:  0.0407 ms
+  tiled:  0.1262 ms  speedup: 0.32x

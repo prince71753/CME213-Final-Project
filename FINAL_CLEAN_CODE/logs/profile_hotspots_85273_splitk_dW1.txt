@@ -1,0 +1,5 @@
+==PROF== Connected to process 590125 (/home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/build_hotspots_85273/profile_training_hotspots)
+==PROF== Profiling "volta_s884gemm_128x128_ldg8_f..." - 0: 0%....50%....100% - 36 passes
+HOTSPOT_TIMING case=splitk_dW1 m=256 n=1024 k=2048 batch=1 runtime_us=57.549 flops=1073741824 gflops=18657.937
+==PROF== Disconnected from process 590125
+==PROF== Report: /home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/profiles/hotspot_splitk_dW1_85273.ncu-rep

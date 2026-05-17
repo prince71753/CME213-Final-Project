@@ -1,0 +1,346 @@
+=== Environment ===
+hpcc-gpu-5-3
+0, Quadro RTX 6000, 23040 MiB
+1, Quadro RTX 6000, 23040 MiB
+2, Quadro RTX 6000, 23040 MiB
+3, Quadro RTX 6000, 23040 MiB
+=== GPU state: start ===
+index, name, temperature.gpu, clocks.current.sm [MHz], clocks.current.memory [MHz], power.draw [W], utilization.gpu [%], memory.used [MiB]
+0, Quadro RTX 6000, 35, 300 MHz, 405 MHz, 21.97 W, 0 %, 0 MiB
+1, Quadro RTX 6000, 31, 300 MHz, 405 MHz, 16.81 W, 0 %, 0 MiB
+2, Quadro RTX 6000, 28, 300 MHz, 405 MHz, 16.25 W, 0 %, 0 MiB
+3, Quadro RTX 6000, 26, 300 MHz, 405 MHz, 4.11 W, 0 %, 0 MiB
+hidden=256
+repeats=5
+cooldown_sec=5
+steps=50
+buckets_kb=1024
+lr=1e-4
+gemm_backend=cublas_tc
+run_blocking=1
+case_timeout_sec=60
+=== Build hidden=256 ===
+mkdir -p build_comm_thread_h256_final_clean_h256_comm
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=256 -DFF_DIM=1024 -DHEAD_DIM=64 -c src/kernels/gemm.cu -o build_comm_thread_h256_final_clean_h256_comm/kernels/gemm.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=256 -DFF_DIM=1024 -DHEAD_DIM=64 -c src/kernels/attention.cu -o build_comm_thread_h256_final_clean_h256_comm/kernels/attention.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=256 -DFF_DIM=1024 -DHEAD_DIM=64 -c src/kernels/layernorm.cu -o build_comm_thread_h256_final_clean_h256_comm/kernels/layernorm.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=256 -DFF_DIM=1024 -DHEAD_DIM=64 -c src/kernels/activations.cu -o build_comm_thread_h256_final_clean_h256_comm/kernels/activations.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=256 -DFF_DIM=1024 -DHEAD_DIM=64 -c src/kernels/embedding.cu -o build_comm_thread_h256_final_clean_h256_comm/kernels/embedding.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=256 -DFF_DIM=1024 -DHEAD_DIM=64 -c src/model/transformer.cu -o build_comm_thread_h256_final_clean_h256_comm/model/transformer.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=256 -DFF_DIM=1024 -DHEAD_DIM=64 -c src/main.cu -o build_comm_thread_h256_final_clean_h256_comm/main.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=256 -DFF_DIM=1024 -DHEAD_DIM=64 -x cu -c src/data/dataset.cpp -o build_comm_thread_h256_final_clean_h256_comm/data/dataset.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=256 -DFF_DIM=1024 -DHEAD_DIM=64 -x cu -c src/model/distributed.cpp -o build_comm_thread_h256_final_clean_h256_comm/model/distributed.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=256 -DFF_DIM=1024 -DHEAD_DIM=64 -o build_comm_thread_h256_final_clean_h256_comm/train build_comm_thread_h256_final_clean_h256_comm/kernels/gemm.o build_comm_thread_h256_final_clean_h256_comm/kernels/attention.o build_comm_thread_h256_final_clean_h256_comm/kernels/layernorm.o build_comm_thread_h256_final_clean_h256_comm/kernels/activations.o build_comm_thread_h256_final_clean_h256_comm/kernels/embedding.o build_comm_thread_h256_final_clean_h256_comm/model/transformer.o build_comm_thread_h256_final_clean_h256_comm/main.o build_comm_thread_h256_final_clean_h256_comm/data/dataset.o build_comm_thread_h256_final_clean_h256_comm/model/distributed.o -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -Xlinker -rpath=/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -lcublas -lcublasLt 
+mkdir -p build_comm_thread_mpi_h256_final_clean_h256_comm
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=256 -DFF_DIM=1024 -DHEAD_DIM=64 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/kernels/gemm.cu -o build_comm_thread_mpi_h256_final_clean_h256_comm/kernels/gemm.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=256 -DFF_DIM=1024 -DHEAD_DIM=64 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/kernels/attention.cu -o build_comm_thread_mpi_h256_final_clean_h256_comm/kernels/attention.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=256 -DFF_DIM=1024 -DHEAD_DIM=64 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/kernels/layernorm.cu -o build_comm_thread_mpi_h256_final_clean_h256_comm/kernels/layernorm.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=256 -DFF_DIM=1024 -DHEAD_DIM=64 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/kernels/activations.cu -o build_comm_thread_mpi_h256_final_clean_h256_comm/kernels/activations.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=256 -DFF_DIM=1024 -DHEAD_DIM=64 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/kernels/embedding.cu -o build_comm_thread_mpi_h256_final_clean_h256_comm/kernels/embedding.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=256 -DFF_DIM=1024 -DHEAD_DIM=64 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/model/transformer.cu -o build_comm_thread_mpi_h256_final_clean_h256_comm/model/transformer.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=256 -DFF_DIM=1024 -DHEAD_DIM=64 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/main.cu -o build_comm_thread_mpi_h256_final_clean_h256_comm/main.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=256 -DFF_DIM=1024 -DHEAD_DIM=64 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -x cu -c src/data/dataset.cpp -o build_comm_thread_mpi_h256_final_clean_h256_comm/data/dataset.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=256 -DFF_DIM=1024 -DHEAD_DIM=64 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -x cu -c src/model/distributed.cpp -o build_comm_thread_mpi_h256_final_clean_h256_comm/model/distributed.o
+mpicxx -o build_comm_thread_mpi_h256_final_clean_h256_comm/train_mpi build_comm_thread_mpi_h256_final_clean_h256_comm/kernels/gemm.o build_comm_thread_mpi_h256_final_clean_h256_comm/kernels/attention.o build_comm_thread_mpi_h256_final_clean_h256_comm/kernels/layernorm.o build_comm_thread_mpi_h256_final_clean_h256_comm/kernels/activations.o build_comm_thread_mpi_h256_final_clean_h256_comm/kernels/embedding.o build_comm_thread_mpi_h256_final_clean_h256_comm/model/transformer.o build_comm_thread_mpi_h256_final_clean_h256_comm/main.o build_comm_thread_mpi_h256_final_clean_h256_comm/data/dataset.o build_comm_thread_mpi_h256_final_clean_h256_comm/model/distributed.o -pthread -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/lib -Wl,-rpath -Wl,/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/lib -Wl,--enable-new-dtags -lmpi -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/REDIST/cuda/12.3/targets/x86_64-linux/lib -lcudart \
+    -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -Wl,-rpath,/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -lcublas -lcublasLt \
+    -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/lib -Xlinker -rpath -Xlinker /home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/lib -lnccl  -fopenmp
+=== hidden=256 backend=direct sync_mode=blocking bucket_kb=0 repeat=1 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=256 heads=4 ff=1024 batch=32
+Parameters: 838400 (3275.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1872
+Epoch 1: avg_logged_loss=3.1872  steps/rank=50  262ms  1561153 tok/s  avg_grad_sync=4.376ms  checksum_span=3.441e-06
+=== hidden=256 backend=pinned sync_mode=overlap bucket_kb=1024 repeat=1 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=256 heads=4 ff=1024 batch=32
+Parameters: 838400 (3275.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=1024 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1942
+Epoch 1: avg_logged_loss=3.1942  steps/rank=50  202ms  2032521 tok/s  avg_grad_start=1.212ms  avg_grad_finish=1.899ms  checksum_span=2.621e-06
+=== hidden=256 backend=openmp_thread sync_mode=overlap bucket_kb=1024 repeat=1 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=256 heads=4 ff=1024 batch=32
+Parameters: 838400 (3275.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=1024 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1907
+Epoch 1: avg_logged_loss=3.1907  steps/rank=50  181ms  2266489 tok/s  avg_grad_start=0.011ms  avg_grad_finish=2.647ms  checksum_span=1.800e-06
+=== hidden=256 backend=direct sync_mode=blocking bucket_kb=0 repeat=2 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=256 heads=4 ff=1024 batch=32
+Parameters: 838400 (3275.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2127
+Epoch 1: avg_logged_loss=3.2127  steps/rank=50  274ms  1494156 tok/s  avg_grad_sync=4.552ms  checksum_span=7.207e-06
+=== hidden=256 backend=pinned sync_mode=overlap bucket_kb=1024 repeat=2 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=256 heads=4 ff=1024 batch=32
+Parameters: 838400 (3275.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=1024 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1827
+Epoch 1: avg_logged_loss=3.1827  steps/rank=50  198ms  2065680 tok/s  avg_grad_start=1.197ms  avg_grad_finish=1.937ms  checksum_span=2.495e-06
+=== hidden=256 backend=openmp_thread sync_mode=overlap bucket_kb=1024 repeat=2 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=256 heads=4 ff=1024 batch=32
+Parameters: 838400 (3275.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=1024 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1845
+Epoch 1: avg_logged_loss=3.1845  steps/rank=50  180ms  2273024 tok/s  avg_grad_start=0.011ms  avg_grad_finish=2.665ms  checksum_span=3.575e-06
+=== hidden=256 backend=direct sync_mode=blocking bucket_kb=0 repeat=3 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=256 heads=4 ff=1024 batch=32
+Parameters: 838400 (3275.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1846
+Epoch 1: avg_logged_loss=3.1846  steps/rank=50  274ms  1492592 tok/s  avg_grad_sync=4.670ms  checksum_span=4.578e-06
+=== hidden=256 backend=pinned sync_mode=overlap bucket_kb=1024 repeat=3 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=256 heads=4 ff=1024 batch=32
+Parameters: 838400 (3275.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=1024 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1804
+Epoch 1: avg_logged_loss=3.1804  steps/rank=50  199ms  2055536 tok/s  avg_grad_start=1.200ms  avg_grad_finish=1.889ms  checksum_span=2.972e-06
+=== hidden=256 backend=openmp_thread sync_mode=overlap bucket_kb=1024 repeat=3 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=256 heads=4 ff=1024 batch=32
+Parameters: 838400 (3275.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=1024 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1823
+Epoch 1: avg_logged_loss=3.1823  steps/rank=50  182ms  2252797 tok/s  avg_grad_start=0.011ms  avg_grad_finish=2.650ms  checksum_span=3.721e-06
+=== hidden=256 backend=direct sync_mode=blocking bucket_kb=0 repeat=4 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=256 heads=4 ff=1024 batch=32
+Parameters: 838400 (3275.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1840
+Epoch 1: avg_logged_loss=3.1840  steps/rank=50  268ms  1525670 tok/s  avg_grad_sync=4.470ms  checksum_span=3.123e-06
+=== hidden=256 backend=pinned sync_mode=overlap bucket_kb=1024 repeat=4 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=256 heads=4 ff=1024 batch=32
+Parameters: 838400 (3275.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=1024 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1838
+Epoch 1: avg_logged_loss=3.1838  steps/rank=50  198ms  2065823 tok/s  avg_grad_start=1.198ms  avg_grad_finish=1.861ms  checksum_span=5.136e-06
+=== hidden=256 backend=openmp_thread sync_mode=overlap bucket_kb=1024 repeat=4 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=256 heads=4 ff=1024 batch=32
+Parameters: 838400 (3275.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=1024 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1791
+Epoch 1: avg_logged_loss=3.1791  steps/rank=50  179ms  2291582 tok/s  avg_grad_start=0.011ms  avg_grad_finish=2.612ms  checksum_span=3.772e-06
+=== hidden=256 backend=direct sync_mode=blocking bucket_kb=0 repeat=5 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=256 heads=4 ff=1024 batch=32
+Parameters: 838400 (3275.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1828
+Epoch 1: avg_logged_loss=3.1828  steps/rank=50  272ms  1507810 tok/s  avg_grad_sync=4.525ms  checksum_span=4.499e-06
+=== hidden=256 backend=pinned sync_mode=overlap bucket_kb=1024 repeat=5 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=256 heads=4 ff=1024 batch=32
+Parameters: 838400 (3275.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=1024 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1777
+Epoch 1: avg_logged_loss=3.1777  steps/rank=50  198ms  2067412 tok/s  avg_grad_start=1.193ms  avg_grad_finish=1.919ms  checksum_span=4.312e-06
+=== hidden=256 backend=openmp_thread sync_mode=overlap bucket_kb=1024 repeat=5 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=256 heads=4 ff=1024 batch=32
+Parameters: 838400 (3275.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=1024 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1894
+Epoch 1: avg_logged_loss=3.1894  steps/rank=50  181ms  2260915 tok/s  avg_grad_start=0.011ms  avg_grad_finish=2.638ms  checksum_span=1.374e-06
+=== GPU state: end ===
+index, name, temperature.gpu, clocks.current.sm [MHz], clocks.current.memory [MHz], power.draw [W], utilization.gpu [%], memory.used [MiB]
+0, Quadro RTX 6000, 34, 390 MHz, 405 MHz, 16.30 W, 0 %, 0 MiB
+1, Quadro RTX 6000, 37, 300 MHz, 405 MHz, 16.70 W, 0 %, 0 MiB
+2, Quadro RTX 6000, 34, 300 MHz, 405 MHz, 16.72 W, 0 %, 0 MiB
+3, Quadro RTX 6000, 32, 300 MHz, 405 MHz, 4.16 W, 0 %, 0 MiB
+=== Summarize ===
+Wrote results/training_bucket_sweep_comm_thread_final_clean_h256_comm.csv
+Wrote results/training_bucket_sweep_summary_comm_thread_final_clean_h256_comm.csv
+=== DONE job=final_clean_h256_comm status=0 ===

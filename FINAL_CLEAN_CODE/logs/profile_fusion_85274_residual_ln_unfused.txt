@@ -1,0 +1,8 @@
+==PROF== Connected to process 590806 (/home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/build_profile_85274/profile_fusion_kernels)
+==PROF== Profiling "residual_add_kernel_vec4" - 0: 0%....50%....100% - 35 passes
+==PROF== Profiling "layernorm_save_kernel" - 1: 0%....50%....100% - 36 passes
+check residual_ln res_abs=0.000e+00 out_abs=0.000e+00 PASS
+PROFILE_CASE residual_ln_unfused rows=2048 cols=128
+PROFILE_TIMING case=residual_ln_unfused runtime_us=3610962.000 estimated_read_bytes=7340032 estimated_write_bytes=2097152 estimated_total_bytes=9437184 estimated_effective_bw_gbs=0.00
+==PROF== Disconnected from process 590806
+==PROF== Report: /home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/profiles/fusion_residual_ln_unfused_85274.ncu-rep
