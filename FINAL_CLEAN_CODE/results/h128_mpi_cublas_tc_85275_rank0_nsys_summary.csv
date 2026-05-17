@@ -1,0 +1,23 @@
+profile,kind,name,calls,total_ms,avg_us,total_mb
+h128_mpi_cublas_tc_85275_rank0,kernel,volta_s884gemm_128x128_ldg8_f2f_tn,240,3.536776,14.736566666666668,
+h128_mpi_cublas_tc_85275_rank0,kernel,volta_s884gemm_128x128_ldg8_f2f_nt,240,3.244579,13.519079166666666,
+h128_mpi_cublas_tc_85275_rank0,kernel,volta_s884gemm_128x128_ldg8_f2f_nn,150,2.147276,14.315173333333334,
+h128_mpi_cublas_tc_85275_rank0,kernel,volta_sgemm_128x32_sliced1x4_nn,30,0.780889,26.029633333333337,
+h128_mpi_cublas_tc_85275_rank0,kernel,"void cublasLt::splitKreduce_kernel<(int)32, (int)16, int, float, float, float, float, (bool)1, (bool)0, (bool)0>(cublasLt::cublasSplitKParams<T6>, const T4 *, const T5 *, T5 *, const T6 *, const T6 *, const T7 *, const T4 *, T7 *, void *, long, T6 *, int *)",210,0.76319,3.6342380952380955,
+h128_mpi_cublas_tc_85275_rank0,kernel,"<unnamed>::layernorm_backward_dweight_kernel(const float *, const float *, const float *, const float *, float *, float *, int, int)",60,0.737755,12.295916666666667,
+h128_mpi_cublas_tc_85275_rank0,kernel,"void <unnamed>::layernorm_backward_dx_kernel<(bool)1>(const float *, const float *, const float *, const float *, const float *, float *, int)",60,0.647706,10.7951,
+h128_mpi_cublas_tc_85275_rank0,kernel,"fused_relu_backward_bias_backward_kernel(const float *, const float *, float *, float *, int, int)",30,0.57862,19.287333333333333,
+h128_mpi_cublas_tc_85275_rank0,kernel,"scale_softmax_kernel(float *, int, float)",30,0.560636,18.687866666666665,
+h128_mpi_cublas_tc_85275_rank0,kernel,"bias_relu_kernel_vec4(const float4 *, const float4 *, float4 *, int, int)",30,0.506236,16.874533333333332,
+h128_mpi_cublas_tc_85275_rank0,kernel,"compute_ds_kernel(const float *, const float *, const float *, const float *, float *, int, int)",30,0.460701,15.3567,
+h128_mpi_cublas_tc_85275_rank0,kernel,"adam_clipped_kernel(float *, const float *, float *, float *, const float *, float, float, float, float, float, float, float, int)",30,0.344537,11.484566666666668,
+h128_mpi_cublas_tc_85275_rank0,kernel,volta_sgemm_32x128_nn,30,0.335546,11.184866666666666,
+h128_mpi_cublas_tc_85275_rank0,kernel,"residual_layernorm_save_kernel(const float *, const float *, const float *, const float *, float *, float *, float *, float *, int, float)",30,0.311006,10.366866666666667,
+h128_mpi_cublas_tc_85275_rank0,kernel,volta_sgemm_128x64_tn,30,0.287388,9.579600000000001,
+h128_mpi_cublas_tc_85275_rank0,kernel,volta_sgemm_32x32_sliced1x4_nt,30,0.284122,9.470733333333333,
+h128_mpi_cublas_tc_85275_rank0,kernel,"layernorm_save_kernel(const float *, const float *, const float *, float *, float *, float *, int, float)",30,0.217788,7.259600000000001,
+h128_mpi_cublas_tc_85275_rank0,kernel,"bias_add_residual_add_kernel_vec4(const float4 *, const float4 *, const float4 *, float4 *, int, int)",30,0.186527,6.2175666666666665,
+h128_mpi_cublas_tc_85275_rank0,kernel,"cross_entropy_kernel(const float *, const int *, float *, float *, int, float)",30,0.157405,5.246833333333333,
+h128_mpi_cublas_tc_85275_rank0,kernel,"scale_kernel(float *, float, int)",120,0.147617,1.2301416666666667,
+h128_mpi_cublas_tc_85275_rank0,memcpy,Host-to-Device,124,3.851397,31.05965322580645,35.493888
+h128_mpi_cublas_tc_85275_rank0,memcpy,Device-to-Host,122,2.224109,18.23040163934426,27.601412

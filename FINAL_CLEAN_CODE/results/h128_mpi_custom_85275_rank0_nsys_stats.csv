@@ -1,0 +1,58 @@
+Processing [profiles/h128_mpi_custom_85275_rank0.sqlite] with [/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/profilers/Nsight_Systems/host-linux-x64/reports/cuda_gpu_kern_sum.py]... 
+Time (%),Total Time (ns),Instances,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Name
+30.2,7333070,210,34919.4,27680.0,22559,57215,13132.1,"gemm_splitk_AT_kernel(const float *, const float *, float *, int, int, int, int)"
+19.4,4720798,180,26226.7,17024.0,13888,57855,16059.5,"gemm_v2_BT_kernel(const float *, const float *, float *, int, int, int, bool)"
+12.9,3135015,90,34833.5,36896.0,14496,54144,15681.4,"gemm_v2_kernel(const float *, const float *, float *, int, int, int, bool)"
+6.4,1556181,90,17290.9,13728.0,10528,27807,7362.1,"gemm_v2_batched_kernel(const float *, const float *, float *, int, int, int, int, int, int)"
+4.4,1075450,60,17924.2,17888.0,15871,20127,1844.2,"gemm_batched_AT_kernel(const float *, const float *, float *, int, int, int, int, int, int)"
+3.0,735835,60,12263.9,12272.0,11872,12640,260.9,"<unnamed>::layernorm_backward_dweight_kernel(const float *, const float *, const float *, const float *, float *, float *, int, int)"
+2.5,617532,60,10292.2,10384.0,9632,11072,375.2,"void <unnamed>::layernorm_backward_dx_kernel<(bool)1>(const float *, const float *, const float *, const float *, const float *, float *, int)"
+2.3,569435,30,18981.2,19424.0,10784,19776,1683.4,"fused_relu_backward_bias_backward_kernel(const float *, const float *, float *, float *, int, int)"
+2.3,550427,30,18347.6,18351.5,18176,18624,83.4,"scale_softmax_kernel(float *, int, float)"
+2.0,475199,30,15840.0,15840.0,15584,16416,155.6,"gemm_reg_kernel(const float *, const float *, float *, int, int, int, bool)"
+1.9,458431,30,15281.0,15264.0,15008,15488,114.5,"compute_ds_kernel(const float *, const float *, const float *, const float *, float *, int, int)"
+1.8,447359,60,7456.0,7439.5,6304,8704,1063.2,"gemm_v2_batched_BT_kernel(const float *, const float *, float *, int, int, int, int, int, int)"
+1.4,333341,30,11111.4,11071.5,10816,11616,169.6,"gemm_BT_kernel(const float *, const float *, float *, int, int, int, bool)"
+1.4,328414,30,10947.1,10976.0,10720,11168,112.6,"adam_clipped_kernel(float *, const float *, float *, float *, const float *, float, float, float, float, float, float, float, int)"
+1.2,285600,30,9520.0,9504.0,8896,10784,400.8,"bias_relu_kernel_vec4(const float4 *, const float4 *, float4 *, int, int)"
+1.1,264735,30,8824.5,8832.0,8608,9056,123.7,"residual_layernorm_save_kernel(const float *, const float *, const float *, const float *, float *, float *, float *, float *, int, float)"
+0.9,218177,30,7272.6,7264.0,7168,7520,69.2,"layernorm_save_kernel(const float *, const float *, const float *, float *, float *, float *, int, float)"
+0.6,151039,30,5034.6,5024.0,4800,5344,122.1,"cross_entropy_kernel(const float *, const int *, float *, float *, int, float)"
+0.6,148767,30,4958.9,4992.0,4768,5312,137.2,"bias_add_residual_add_kernel_vec4(const float4 *, const float4 *, const float4 *, float4 *, int, int)"
+0.6,147677,120,1230.6,1216.0,1023,1473,136.4,"scale_kernel(float *, float, int)"
+0.5,123998,30,4133.3,4128.0,3808,4448,157.9,"embedding_backward_kernel(const float *, const int *, float *, int, int)"
+0.5,123647,30,4121.6,4097.0,3999,4352,68.5,"embedding_forward_kernel(const float *, const int *, float *, int, int)"
+0.4,103041,30,3434.7,3424.0,3296,3648,72.9,"bias_backward_kernel(const float *, float *, int, int, int)"
+0.4,101093,30,3369.8,3361.0,3296,3424,28.0,"norm_sq_kernel(const float *, float *, int)"
+0.4,98720,30,3290.7,3296.0,3232,3424,35.8,"pos_embedding_kernel(const float *, float *, int, int, int)"
+0.3,84992,30,2833.1,2848.0,2784,2880,26.2,"pos_embedding_backward_kernel(const float *, float *, int, int, int)"
+0.2,46879,30,1562.6,1568.0,1535,1600,25.3,"reduce_sum_kernel(const float *, float *, int)"
+0.1,33217,30,1107.2,1120.0,1056,1152,26.1,"clip_scale_kernel(const float *, float *, float)"
+0.1,31679,30,1056.0,1056.0,1024,1088,23.8,"scale_device_scalar(float *, float)"
+0.0,8864,9,984.9,960.0,928,1088,63.6,"init_weights_kernel(float *, int, float, unsigned int)"
+
+Processing [profiles/h128_mpi_custom_85275_rank0.sqlite] with [/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/profilers/Nsight_Systems/host-linux-x64/reports/cuda_gpu_mem_time_sum.py]... 
+Time (%),Total Time (ns),Count,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Operation
+61.5,4016701,124,32392.8,28064.0,320,382333,45400.2,[CUDA memcpy Host-to-Device]
+34.1,2226417,122,18249.3,20928.0,1504,68704,8447.4,[CUDA memcpy Device-to-Host]
+4.4,289886,157,1846.4,1408.0,319,10720,2041.2,[CUDA memset]
+
+Processing [profiles/h128_mpi_custom_85275_rank0.sqlite] with [/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/profilers/Nsight_Systems/host-linux-x64/reports/cuda_gpu_mem_size_sum.py]... 
+Total (MB),Count,Avg (MB),Med (MB),Min (MB),Max (MB),StdDev (MB),Operation
+167.697,157,1.068,0.890,0.000,4.194,1.295,[CUDA memset]
+35.494,124,0.286,0.264,0.001,4.391,0.536,[CUDA memcpy Host-to-Device]
+27.601,122,0.226,0.264,0.000,0.890,0.111,[CUDA memcpy Device-to-Host]
+
+Processing [profiles/h128_mpi_custom_85275_rank0.sqlite] with [/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/profilers/Nsight_Systems/host-linux-x64/reports/cuda_api_sum.py]... 
+Time (%),Total Time (ns),Num Calls,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Name
+46.2,26680850,246,108458.7,44094.0,7254,468710,104120.0,cudaMemcpy_ptds
+19.7,11370083,40,284252.1,263736.0,5711,763771,280887.2,cudaFree
+15.0,8669536,1539,5633.2,4269.0,3697,582897,18559.0,cudaLaunchKernel_ptsz
+13.8,7976415,40,199410.4,92044.5,2244,621971,215884.4,cudaMalloc
+2.6,1510661,4,377665.3,5400.5,4028,1495832,745444.8,cudaHostAlloc
+1.0,581732,124,4691.4,4644.0,2986,31450,2531.2,cudaMemsetAsync_ptsz
+0.9,543063,4,135765.8,12404.0,7805,510450,249802.6,cudaFreeHost
+0.5,291103,33,8821.3,7664.0,4519,67929,10830.0,cudaMemset_ptds
+0.2,123738,31,3991.5,3737.0,3366,7864,1039.2,cudaDeviceSynchronize
+0.0,4198,1,4198.0,4198.0,4198,4198,0.0,cuModuleGetLoadingMode
+

@@ -1,0 +1,16 @@
+hidden,backend,requested_sync_mode,effective_sync,bucket_kb,repeat,requested_steps,lr,avg_logged_loss,steps_rank,time_ms,throughput_tok_s,throughput_mtok_s,avg_grad_sync_ms,avg_grad_start_ms,avg_grad_finish_ms,checksum_span,valid
+256,direct,blocking,blocking,0,1,50,1e-4,3.1872,50,262.0,1561153.0,1.561153,4.376,,,3.441e-06,yes
+256,pinned,overlap,overlap,1024,1,50,1e-4,3.1942,50,202.0,2032521.0,2.032521,,1.212,1.899,2.621e-06,yes
+256,openmp_thread,overlap,overlap,1024,1,50,1e-4,3.1907,50,181.0,2266489.0,2.266489,,0.011,2.647,1.800e-06,yes
+256,direct,blocking,blocking,0,2,50,1e-4,3.2127,50,274.0,1494156.0,1.494156,4.552,,,7.207e-06,yes
+256,pinned,overlap,overlap,1024,2,50,1e-4,3.1827,50,198.0,2065680.0,2.06568,,1.197,1.937,2.495e-06,yes
+256,openmp_thread,overlap,overlap,1024,2,50,1e-4,3.1845,50,180.0,2273024.0,2.273024,,0.011,2.665,3.575e-06,yes
+256,direct,blocking,blocking,0,3,50,1e-4,3.1846,50,274.0,1492592.0,1.492592,4.67,,,4.578e-06,yes
+256,pinned,overlap,overlap,1024,3,50,1e-4,3.1804,50,199.0,2055536.0,2.055536,,1.2,1.889,2.972e-06,yes
+256,openmp_thread,overlap,overlap,1024,3,50,1e-4,3.1823,50,182.0,2252797.0,2.252797,,0.011,2.65,3.721e-06,yes
+256,direct,blocking,blocking,0,4,50,1e-4,3.1840,50,268.0,1525670.0,1.52567,4.47,,,3.123e-06,yes
+256,pinned,overlap,overlap,1024,4,50,1e-4,3.1838,50,198.0,2065823.0,2.065823,,1.198,1.861,5.136e-06,yes
+256,openmp_thread,overlap,overlap,1024,4,50,1e-4,3.1791,50,179.0,2291582.0,2.291582,,0.011,2.612,3.772e-06,yes
+256,direct,blocking,blocking,0,5,50,1e-4,3.1828,50,272.0,1507810.0,1.50781,4.525,,,4.499e-06,yes
+256,pinned,overlap,overlap,1024,5,50,1e-4,3.1777,50,198.0,2067412.0,2.067412,,1.193,1.919,4.312e-06,yes
+256,openmp_thread,overlap,overlap,1024,5,50,1e-4,3.1894,50,181.0,2260915.0,2.260915,,0.011,2.638,1.374e-06,yes

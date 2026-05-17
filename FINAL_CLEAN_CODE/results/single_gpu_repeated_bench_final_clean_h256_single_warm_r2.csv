@@ -1,0 +1,16 @@
+hidden,backend,repeat,requested_steps,lr,world_size,sync_mode,effective_sync,avg_logged_loss,steps_rank,time_ms,throughput_tok_s,throughput_mtok_s,valid
+256,auto,1,100,1e-4,1,blocking,blocking,3.1622,100,281.0,729937.0,0.729937,yes
+256,cublas_tc,1,100,1e-4,1,blocking,blocking,3.1585,100,128.0,1599948.0,1.599948,yes
+256,custom,1,100,1e-4,1,blocking,blocking,3.1857,100,208.0,983531.0,0.983531,yes
+256,auto,2,100,1e-4,1,blocking,blocking,3.1528,100,128.0,1601452.0,1.601452,yes
+256,cublas_tc,2,100,1e-4,1,blocking,blocking,3.1392,100,129.0,1590846.0,1.590846,yes
+256,custom,2,100,1e-4,1,blocking,blocking,3.2018,100,208.0,984851.0,0.984851,yes
+256,auto,3,100,1e-4,1,blocking,blocking,3.1374,100,129.0,1587509.0,1.587509,yes
+256,cublas_tc,3,100,1e-4,1,blocking,blocking,3.1454,100,128.0,1595705.0,1.595705,yes
+256,custom,3,100,1e-4,1,blocking,blocking,3.2107,100,208.0,984602.0,0.984602,yes
+256,auto,4,100,1e-4,1,blocking,blocking,3.1556,100,129.0,1591352.0,1.591352,yes
+256,cublas_tc,4,100,1e-4,1,blocking,blocking,3.1463,100,128.0,1595499.0,1.595499,yes
+256,custom,4,100,1e-4,1,blocking,blocking,3.2198,100,208.0,983330.0,0.98333,yes
+256,auto,5,100,1e-4,1,blocking,blocking,3.1515,100,128.0,1605516.0,1.605516,yes
+256,cublas_tc,5,100,1e-4,1,blocking,blocking,3.1478,100,128.0,1596914.0,1.596914,yes
+256,custom,5,100,1e-4,1,blocking,blocking,3.1940,100,208.0,983274.0,0.983274,yes

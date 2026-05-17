@@ -1,0 +1,64 @@
+Processing [profiles/h128_mpi_cublas_tc_85275_rank0.sqlite] with [/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/profilers/Nsight_Systems/host-linux-x64/reports/cuda_gpu_kern_sum.py]... 
+Time (%),Total Time (ns),Instances,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Name
+20.8,3536776,240,14736.6,12320.0,10335,28928,5635.0,volta_s884gemm_128x128_ldg8_f2f_tn
+19.1,3244579,240,13519.1,11296.0,10656,19680,3329.9,volta_s884gemm_128x128_ldg8_f2f_nt
+12.6,2147276,150,14315.2,14271.0,10624,18688,2382.5,volta_s884gemm_128x128_ldg8_f2f_nn
+4.6,780889,30,26029.6,26064.0,25472,26528,266.5,volta_sgemm_128x32_sliced1x4_nn
+4.5,763190,210,3634.2,2528.0,2112,9696,2287.1,"void cublasLt::splitKreduce_kernel<(int)32, (int)16, int, float, float, float, float, (bool)1, (bool)0, (bool)0>(cublasLt::cublasSplitKParams<T6>, const T4 *, const T5 *, T5 *, const T6 *, const T6 *, const T7 *, const T4 *, T7 *, void *, long, T6 *, int *)"
+4.3,737755,60,12295.9,12256.0,12000,12704,230.8,"<unnamed>::layernorm_backward_dweight_kernel(const float *, const float *, const float *, const float *, float *, float *, int, int)"
+3.8,647706,60,10795.1,10752.0,9536,12031,1115.2,"void <unnamed>::layernorm_backward_dx_kernel<(bool)1>(const float *, const float *, const float *, const float *, const float *, float *, int)"
+3.4,578620,30,19287.3,18992.0,18497,26400,1359.4,"fused_relu_backward_bias_backward_kernel(const float *, const float *, float *, float *, int, int)"
+3.3,560636,30,18687.9,18688.0,18528,18848,74.7,"scale_softmax_kernel(float *, int, float)"
+3.0,506236,30,16874.5,16912.0,16160,18207,436.7,"bias_relu_kernel_vec4(const float4 *, const float4 *, float4 *, int, int)"
+2.7,460701,30,15356.7,15328.0,15136,15552,110.6,"compute_ds_kernel(const float *, const float *, const float *, const float *, float *, int, int)"
+2.0,344537,30,11484.6,11456.0,11232,11744,106.5,"adam_clipped_kernel(float *, const float *, float *, float *, const float *, float, float, float, float, float, float, float, int)"
+2.0,335546,30,11184.9,11183.5,10976,11328,77.0,volta_sgemm_32x128_nn
+1.8,311006,30,10366.9,10352.0,10144,10624,138.3,"residual_layernorm_save_kernel(const float *, const float *, const float *, const float *, float *, float *, float *, float *, int, float)"
+1.7,287388,30,9579.6,9568.0,9504,9632,29.6,volta_sgemm_128x64_tn
+1.7,284122,30,9470.7,9440.0,9312,9984,147.0,volta_sgemm_32x32_sliced1x4_nt
+1.3,217788,30,7259.6,7248.0,7200,7488,56.2,"layernorm_save_kernel(const float *, const float *, const float *, float *, float *, float *, int, float)"
+1.1,186527,30,6217.6,6208.0,5952,6624,151.7,"bias_add_residual_add_kernel_vec4(const float4 *, const float4 *, const float4 *, float4 *, int, int)"
+0.9,157405,30,5246.8,5216.0,5056,5728,139.0,"cross_entropy_kernel(const float *, const int *, float *, float *, int, float)"
+0.9,147617,120,1230.1,1216.0,1024,1472,134.6,"scale_kernel(float *, float, int)"
+0.8,143647,30,4788.2,4768.0,4576,5024,116.0,"bias_backward_kernel(const float *, float *, int, int, int)"
+0.7,123136,30,4104.5,4096.0,3968,4384,81.9,"embedding_forward_kernel(const float *, const int *, float *, int, int)"
+0.7,122625,30,4087.5,4048.0,3840,4479,181.4,"embedding_backward_kernel(const float *, const int *, float *, int, int)"
+0.6,100830,30,3361.0,3360.0,3295,3424,35.1,"norm_sq_kernel(const float *, float *, int)"
+0.6,98624,30,3287.5,3296.0,3232,3488,45.2,"pos_embedding_kernel(const float *, float *, int, int, int)"
+0.5,85120,30,2837.3,2848.0,2784,2880,22.8,"pos_embedding_backward_kernel(const float *, float *, int, int, int)"
+0.3,46782,30,1559.4,1568.0,1536,1600,22.0,"reduce_sum_kernel(const float *, float *, int)"
+0.2,33055,30,1101.8,1119.5,1056,1152,24.7,"clip_scale_kernel(const float *, float *, float)"
+0.2,31041,30,1034.7,1024.5,992,1057,21.2,"scale_device_scalar(float *, float)"
+0.1,8735,9,970.6,928.0,928,1088,61.9,"init_weights_kernel(float *, int, float, unsigned int)"
+
+Processing [profiles/h128_mpi_cublas_tc_85275_rank0.sqlite] with [/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/profilers/Nsight_Systems/host-linux-x64/reports/cuda_gpu_mem_time_sum.py]... 
+Time (%),Total Time (ns),Count,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Operation
+60.3,3851397,124,31059.7,26224.0,352,379069,45413.5,[CUDA memcpy Host-to-Device]
+34.8,2224109,122,18230.4,20927.5,1408,68607,8444.1,[CUDA memcpy Device-to-Host]
+4.9,315583,157,2010.1,1376.0,288,11072,2217.6,[CUDA memset]
+
+Processing [profiles/h128_mpi_cublas_tc_85275_rank0.sqlite] with [/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/profilers/Nsight_Systems/host-linux-x64/reports/cuda_gpu_mem_size_sum.py]... 
+Total (MB),Count,Avg (MB),Med (MB),Min (MB),Max (MB),StdDev (MB),Operation
+167.697,157,1.068,0.890,0.000,4.194,1.295,[CUDA memset]
+35.494,124,0.286,0.264,0.001,4.391,0.536,[CUDA memcpy Host-to-Device]
+27.601,122,0.226,0.264,0.000,0.890,0.111,[CUDA memcpy Device-to-Host]
+
+Processing [profiles/h128_mpi_cublas_tc_85275_rank0.sqlite] with [/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/profilers/Nsight_Systems/host-linux-x64/reports/cuda_api_sum.py]... 
+Time (%),Total Time (ns),Num Calls,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Name
+35.4,24657624,42,587086.3,18926.0,5440,13351726,2056481.4,cudaFree
+23.6,16430275,246,66789.7,41929.5,8467,469282,55642.5,cudaMemcpy_ptds
+13.4,9354480,44,212601.8,119562.0,3055,1882717,324830.5,cudaMalloc
+11.3,7888823,960,8217.5,4188.0,3667,3807293,122747.4,cudaLaunchKernel
+7.1,4977862,789,6309.1,4388.0,3817,309548,17760.3,cudaLaunchKernel_ptsz
+4.6,3186969,200,15934.8,601.5,441,2831399,200192.7,cudaOccupancyMaxActiveBlocksPerMultiprocessor
+1.8,1243572,4,310893.0,6036.5,3707,1227792,611267.1,cudaHostAlloc
+0.9,649655,124,5239.2,4909.5,3587,33764,2908.1,cudaMemsetAsync_ptsz
+0.7,486486,4,121621.5,13150.5,8386,451799,220130.0,cudaFreeHost
+0.5,363211,33,11006.4,10701.0,5721,60986,9459.9,cudaMemset_ptds
+0.4,297063,766,387.8,321.0,121,4719,315.7,cuGetProcAddress_v2
+0.2,117413,31,3787.5,3677.0,3026,8195,851.7,cudaDeviceSynchronize
+0.0,26090,18,1449.4,681.5,521,10089,2291.7,cudaEventCreateWithFlags
+0.0,3427,3,1142.3,301.0,251,2875,1500.7,cuModuleGetLoadingMode
+0.0,3306,2,1653.0,1653.0,1342,1964,439.8,cuInit
+0.0,2706,2,1353.0,1353.0,702,2004,920.7,cudaGetDriverEntryPoint_v11030
+

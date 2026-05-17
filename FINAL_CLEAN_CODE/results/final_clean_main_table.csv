@@ -1,0 +1,88 @@
+section,case,config,metric,value,unit,source,notes
+correctness,full matrix,all defaults and smoke tests,result,pass,,job 85267,"make all/tests/mpi, model reference for custom/cublas/cublas_tc/cublas_tc_lt, validate-config, mpi smoke"
+correctness,h512 fp16 model reference,fp16 storage-only and ffn fp16,result,pass,,job 85272,short reference checks pass; repeated training still determines whether a mode is shippable
+single_gpu,h128,auto,warm_mean_throughput,2.4733152499999997,mtok/s,job 85265,"repeat >=2, lr=3e-4, steps=100, valid=4/4, all_valid=yes"
+single_gpu,h128,auto,warm_median_throughput,2.4693815,mtok/s,job 85265,cv=0.698%
+single_gpu,h128,cublas_tc,warm_mean_throughput,2.49435725,mtok/s,job 85265,"repeat >=2, lr=3e-4, steps=100, valid=4/4, all_valid=yes"
+single_gpu,h128,cublas_tc,warm_median_throughput,2.4935295,mtok/s,job 85265,cv=0.199%
+single_gpu,h128,custom,warm_mean_throughput,2.3932634999999998,mtok/s,job 85265,"repeat >=2, lr=3e-4, steps=100, valid=4/4, all_valid=yes"
+single_gpu,h128,custom,warm_median_throughput,2.393319,mtok/s,job 85265,cv=0.024%
+single_gpu,h256,auto,warm_mean_throughput,1.5964572499999998,mtok/s,job 85266,"repeat >=2, lr=1e-4, steps=100, valid=4/4, all_valid=yes"
+single_gpu,h256,auto,warm_median_throughput,1.596402,mtok/s,job 85266,cv=0.528%
+single_gpu,h256,cublas_tc,warm_mean_throughput,1.594741,mtok/s,job 85266,"repeat >=2, lr=1e-4, steps=100, valid=4/4, all_valid=yes"
+single_gpu,h256,cublas_tc,warm_median_throughput,1.595602,mtok/s,job 85266,cv=0.167%
+single_gpu,h256,custom,warm_mean_throughput,0.98401425,mtok/s,job 85266,"repeat >=2, lr=1e-4, steps=100, valid=4/4, all_valid=yes"
+single_gpu,h256,custom,warm_median_throughput,0.983966,mtok/s,job 85266,cv=0.084%
+single_gpu,h512,cublas_tc,warm_mean_throughput,0.7322617499999999,mtok/s,job 85264,"repeat >=2, lr=1e-4, steps=50, valid=4/4, all_valid=yes"
+single_gpu,h512,cublas_tc,warm_median_throughput,0.7309734999999999,mtok/s,job 85264,cv=0.776%
+single_gpu,h512,cublas_tc_ffn_fp16,warm_mean_throughput,0.7611186666666666,mtok/s,job 85264,"repeat >=2, lr=1e-4, steps=50, valid=3/4, all_valid=no"
+single_gpu,h512,cublas_tc_ffn_fp16,warm_median_throughput,0.761259,mtok/s,job 85264,cv=0.140%
+single_gpu,h512,cublas_tc_fp16_storage,warm_mean_throughput,0.7099257499999999,mtok/s,job 85264,"repeat >=2, lr=1e-4, steps=50, valid=4/4, all_valid=yes"
+single_gpu,h512,cublas_tc_fp16_storage,warm_median_throughput,0.709857,mtok/s,job 85264,cv=0.271%
+single_gpu,h512,custom,warm_mean_throughput,0.2825525,mtok/s,job 85264,"repeat >=2, lr=1e-4, steps=50, valid=4/4, all_valid=yes"
+single_gpu,h512,custom,warm_median_throughput,0.2824375,mtok/s,job 85264,cv=0.246%
+single_gpu,h128,cublas_tc_vs_custom,mean_speedup,1.0422,x,derived from final clean summaries,warm repeat >=2
+single_gpu,h256,cublas_tc_vs_custom,mean_speedup,1.6206,x,derived from final clean summaries,warm repeat >=2
+single_gpu,h512,cublas_tc_vs_custom,mean_speedup,2.5916,x,derived from final clean summaries,warm repeat >=2
+distributed_h128,4gpu backend sweep,cublas_tc blocking bucket=0kb,mean_throughput,3.8382739999999997,mtok/s,job 85269,"valid=5/5, checksum_span=1.078e-05"
+distributed_h128,4gpu backend sweep,cublas_tc blocking bucket=0kb,median_throughput,3.844036,mtok/s,job 85269,cv=0.695%
+distributed_h128,4gpu backend sweep,cublas_tc overlap bucket=256kb,mean_throughput,3.928508,mtok/s,job 85269,"valid=5/5, checksum_span=7.698e-06"
+distributed_h128,4gpu backend sweep,cublas_tc overlap bucket=256kb,median_throughput,3.91909,mtok/s,job 85269,cv=0.712%
+distributed_h128,4gpu backend sweep,custom blocking bucket=0kb,mean_throughput,4.826268599999999,mtok/s,job 85269,"valid=5/5, checksum_span=1.029e-05"
+distributed_h128,4gpu backend sweep,custom blocking bucket=0kb,median_throughput,4.826953,mtok/s,job 85269,cv=0.238%
+distributed_h128,4gpu backend sweep,custom overlap bucket=256kb,mean_throughput,4.9709798,mtok/s,job 85269,"valid=5/5, checksum_span=9.303e-06"
+distributed_h128,4gpu backend sweep,custom overlap bucket=256kb,median_throughput,4.969994,mtok/s,job 85269,cv=0.221%
+distributed_h128,4gpu backend crossover,custom overlap vs cublas_tc overlap,mean_speedup,1.2654,x,derived from job 85269,custom remains best for h128 mpi
+distributed_h256,4gpu comm modes,direct blocking bucket=0kb,mean_throughput,1.5162762,mtok/s,job 85271,"valid=5/5, checksum_span=7.207e-06"
+distributed_h256,4gpu comm modes,direct blocking bucket=0kb,median_throughput,1.50781,mtok/s,job 85271,cv=1.872%
+distributed_h256,4gpu comm modes,openmp_thread overlap bucket=1024kb,mean_throughput,2.2689614,mtok/s,job 85271,"valid=5/5, checksum_span=3.772e-06"
+distributed_h256,4gpu comm modes,openmp_thread overlap bucket=1024kb,median_throughput,2.266489,mtok/s,job 85271,cv=0.646%
+distributed_h256,4gpu comm modes,pinned overlap bucket=1024kb,mean_throughput,2.0573943999999997,mtok/s,job 85271,"valid=5/5, checksum_span=5.136e-06"
+distributed_h256,4gpu comm modes,pinned overlap bucket=1024kb,median_throughput,2.06568,mtok/s,job 85271,cv=0.714%
+distributed_h256,4gpu comm modes,openmp_thread vs pinned,mean_speedup,1.1028,x,derived from job 85271,openmp communication thread is kept for h256
+distributed_h256,4gpu comm modes,openmp_thread vs direct,mean_speedup,1.4964,x,derived from job 85271,compares against blocking direct allreduce
+distributed_h512,4gpu comm bucket check,direct blocking bucket=0kb,mean_throughput,0.6862636666666666,mtok/s,job 85268,"short 3-repeat lr=5e-5, valid=3/3, checksum_span=1.264e-05"
+distributed_h512,4gpu comm bucket check,openmp_thread overlap bucket=1024kb,mean_throughput,0.8647456666666667,mtok/s,job 85268,"short 3-repeat lr=5e-5, valid=3/3, checksum_span=1.528e-05"
+distributed_h512,4gpu comm bucket check,openmp_thread overlap bucket=2048kb,mean_throughput,0.8791796666666668,mtok/s,job 85268,"short 3-repeat lr=5e-5, valid=3/3, checksum_span=1.585e-05"
+distributed_h512,4gpu comm bucket check,openmp_thread overlap bucket=4096kb,mean_throughput,0.8785563333333334,mtok/s,job 85268,"short 3-repeat lr=5e-5, valid=3/3, checksum_span=8.891e-06"
+distributed_h512,4gpu comm bucket check,pinned overlap bucket=1024kb,mean_throughput,0.58368,mtok/s,job 85268,"short 3-repeat lr=5e-5, valid=3/3, checksum_span=1.314e-05"
+distributed_h512,4gpu comm bucket check,pinned overlap bucket=2048kb,mean_throughput,0.5698843333333333,mtok/s,job 85268,"short 3-repeat lr=5e-5, valid=3/3, checksum_span=1.028e-05"
+distributed_h512,4gpu comm bucket check,pinned overlap bucket=4096kb,mean_throughput,0.5730736666666666,mtok/s,job 85268,"short 3-repeat lr=5e-5, valid=3/3, checksum_span=6.021e-06"
+distributed_h512,4gpu comm bucket check,best=openmp_thread bucket=2048kb,mean_speedup_vs_direct,1.2811,x,derived from job 85268,short validation; use as supportive evidence rather than sole headline
+strong_scaling,h256 fixed total batch,ranks=1 local_batch=32 blocking,throughput,1.336298,mtok/s,job 85270,"speedup=1.000, efficiency=1.000, valid=yes"
+strong_scaling,h256 fixed total batch,ranks=2 local_batch=16 blocking,throughput,0.402012,mtok/s,job 85270,"speedup=0.302, efficiency=0.151, valid=yes"
+strong_scaling,h256 fixed total batch,ranks=2 local_batch=16 overlap,throughput,0.590351,mtok/s,job 85270,"speedup=0.445, efficiency=0.223, valid=yes"
+strong_scaling,h256 fixed total batch,ranks=4 local_batch=8 blocking,throughput,0.434067,mtok/s,job 85270,"speedup=0.326, efficiency=0.082, valid=yes"
+strong_scaling,h256 fixed total batch,ranks=4 local_batch=8 overlap,throughput,0.62319,mtok/s,job 85270,"speedup=0.470, efficiency=0.117, valid=yes"
+fusion_event,h256 microbenchmark,bias_relu,unfused_time,0.0226,ms,job 85274,cuda event timing from fusion profile smoke
+fusion_event,h256 microbenchmark,bias_relu,fused_time,0.0157,ms,job 85274,cuda event timing from fusion profile smoke
+fusion_event,h256 microbenchmark,bias_relu,speedup,1.44,x,job 85274,event timing used for speedup claims
+fusion_event,h256 microbenchmark,residual_layernorm_fwd,unfused_time,0.0099,ms,job 85274,cuda event timing from fusion profile smoke
+fusion_event,h256 microbenchmark,residual_layernorm_fwd,fused_time,0.0075,ms,job 85274,cuda event timing from fusion profile smoke
+fusion_event,h256 microbenchmark,residual_layernorm_fwd,speedup,1.32,x,job 85274,event timing used for speedup claims
+fusion_event,h256 microbenchmark,layernorm_bwd_residual,unfused_time,0.0222,ms,job 85274,cuda event timing from fusion profile smoke
+fusion_event,h256 microbenchmark,layernorm_bwd_residual,fused_time,0.0200,ms,job 85274,cuda event timing from fusion profile smoke
+fusion_event,h256 microbenchmark,layernorm_bwd_residual,speedup,1.11,x,job 85274,event timing used for speedup claims
+roofline_fusion,bias_relu_fused,ncu aggregate,arithmetic_intensity,0.18584602819904944,flop/byte,job 85274,"dram_bytes=5642176, bottleneck=memory-bound"
+roofline_fusion,bias_relu_fused,ncu aggregate,measured_bandwidth,385.81619256017507,gb/s,job 85274,57.4% of 672 gb/s
+roofline_fusion,bias_relu_unfused,ncu aggregate,arithmetic_intensity,0.08937791682464002,flop/byte,job 85274,"dram_bytes=11731936, bottleneck=memory-bound"
+roofline_fusion,bias_relu_unfused,ncu aggregate,measured_bandwidth,356.637159533074,gb/s,job 85274,53.1% of 672 gb/s
+roofline_fusion,ln_bwd_residual_fused,ncu aggregate,arithmetic_intensity,0.6066773541506936,flop/byte,job 85274,"dram_bytes=7345664, bottleneck=memory-bound;mixed"
+roofline_fusion,ln_bwd_residual_fused,ncu aggregate,measured_bandwidth,253.36865342163355,gb/s,job 85274,37.7% of 672 gb/s
+roofline_fusion,ln_bwd_residual_unfused,ncu aggregate,arithmetic_intensity,0.5517447821173864,flop/byte,job 85274,"dram_bytes=8552128, bottleneck=compute-bound;memory-bound"
+roofline_fusion,ln_bwd_residual_unfused,ncu aggregate,measured_bandwidth,251.414863593603,gb/s,job 85274,37.4% of 672 gb/s
+roofline_fusion,residual_ln_fused,ncu aggregate,arithmetic_intensity,0.9354683178115564,flop/byte,job 85274,"dram_bytes=2522048, bottleneck=compute-bound"
+roofline_fusion,residual_ln_fused,ncu aggregate,measured_bandwidth,228.44637681159418,gb/s,job 85274,34.0% of 672 gb/s
+roofline_fusion,residual_ln_unfused,ncu aggregate,arithmetic_intensity,0.652385123835311,flop/byte,job 85274,"dram_bytes=3616416, bottleneck=compute-bound;memory-bound"
+roofline_fusion,residual_ln_unfused,ncu aggregate,measured_bandwidth,215.26285714285717,gb/s,job 85274,32.0% of 672 gb/s
+hotspot_ncu,batched_qkv,volta_s884gemm_128x128_ldg8_f2f_nn,ncu_gflops,15123.692307692305,gflop/s,job 85273,"ai=95.28, bw=158.74 gb/s"
+hotspot_ncu,fwd_ff1,volta_s884gemm_128x128_ldg8_f2f_nn,ncu_gflops,19075.85673678226,gflop/s,job 85273,"ai=108.34, bw=176.07 gb/s"
+hotspot_ncu,splitk_dW1,volta_s884gemm_128x128_ldg8_f2f_nt,ncu_gflops,15805.196420160151,gflop/s,job 85273,"ai=77.33, bw=204.39 gb/s"
+hotspot_ncu,splitk_dW2,volta_s884gemm_128x128_ldg8_f2f_nt,ncu_gflops,16249.119612590799,gflop/s,job 85273,"ai=77.25, bw=210.33 gb/s"
+nsys_h256_comm,direct,Device-to-Host,total_memcpy_time,13.48909,ms,job 85276,"calls=22, total_mb=70.425604"
+nsys_h256_comm,direct,Host-to-Device,total_memcpy_time,7.527532,ms,job 85276,"calls=24, total_mb=75.855872"
+nsys_h256_comm,pinned,Host-to-Device,total_memcpy_time,6.824586,ms,job 85276,"calls=84, total_mb=75.855872"
+nsys_h256_comm,pinned,Device-to-Host,total_memcpy_time,5.632592,ms,job 85276,"calls=82, total_mb=70.425604"
+nsys_h256_comm,openmp_thread,Host-to-Device,total_memcpy_time,6.255577,ms,job 85276,"calls=84, total_mb=75.855872"
+nsys_h256_comm,openmp_thread,Device-to-Host,total_memcpy_time,5.793821,ms,job 85276,"calls=82, total_mb=70.425604"
+power,nvml sampling,time-sampled power,result,not included,,manual,only start/end nvidia-smi states were captured; no repeated time-sampled energy claim is made

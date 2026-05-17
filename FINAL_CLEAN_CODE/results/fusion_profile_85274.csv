@@ -1,0 +1,12 @@
+case,launch_id,kernel_name,runtime_us,dram_read_bytes,dram_write_bytes,dram_throughput_pct,sm_throughput_pct,achieved_occupancy_pct,observed_bottleneck,counter_source
+bias_relu_fused,0,"bias_relu_kernel_vec4(const float4 *, const float4 *, float4 *, int, int)",14.624,4551488.0,1090688.0,81.41,8.38,81.47,memory-bound,ncu
+bias_relu_unfused,0,"bias_add_kernel(float *, const float *, int, int)",16.96,4698336.0,1212192.0,65.12,20.66,78.83,memory-bound,ncu
+bias_relu_unfused,1,"relu_forward_kernel(const float *, float *, int)",15.936,4616384.0,1205024.0,72.74,14.96,76.8,memory-bound,ncu
+ln_bwd_residual_fused,0,"void <unnamed>::layernorm_backward_dx_kernel<(bool)1>(const float *, const float *, const float *, const float *, const float *, float *, int)",11.68,3765728.0,0.0,53.76,54.21,86.19,mixed,ncu
+ln_bwd_residual_fused,1,"<unnamed>::layernorm_backward_dweight_kernel(const float *, const float *, const float *, const float *, float *, float *, int, int)",17.312,3579936.0,0.0,33.26,6.74,42.72,memory-bound,ncu
+ln_bwd_residual_unfused,0,"void <unnamed>::layernorm_backward_dx_kernel<(bool)0>(const float *, const float *, const float *, const float *, const float *, float *, int)",10.4,2579232.0,0.0,40.01,57.33,85.83,compute-bound,ncu
+ln_bwd_residual_unfused,1,"<unnamed>::layernorm_backward_dweight_kernel(const float *, const float *, const float *, const float *, float *, float *, int, int)",17.184,3604192.0,0.0,33.82,6.81,43.01,memory-bound,ncu
+ln_bwd_residual_unfused,2,"residual_add_kernel_vec4(const float4 *, const float4 *, float4 *, int)",6.432,2368704.0,0.0,61.52,2.57,64.84,memory-bound,ncu
+residual_ln_fused,0,"residual_layernorm_save_kernel(const float *, const float *, const float *, const float *, float *, float *, float *, float *, int, float)",11.040000000000001,2522048.0,0.0,38.58,58.21,85.71,compute-bound,ncu
+residual_ln_unfused,0,"residual_add_kernel_vec4(const float4 *, const float4 *, float4 *, int)",6.048,2375232.0,0.0,64.01,2.67,65.88,memory-bound,ncu
+residual_ln_unfused,1,"layernorm_save_kernel(const float *, const float *, const float *, float *, float *, float *, int, float)",10.752,1241184.0,0.0,19.5,56.18,85.69,compute-bound,ncu

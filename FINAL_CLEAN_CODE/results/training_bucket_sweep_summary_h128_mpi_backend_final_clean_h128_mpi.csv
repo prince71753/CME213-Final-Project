@@ -1,0 +1,5 @@
+hidden,backend,requested_sync_mode,effective_sync,bucket_kb,requested_steps,lr,runs,valid_runs,throughput_mean_mtok_s,throughput_median_mtok_s,throughput_std_mtok_s,throughput_cv_pct,time_mean_ms,time_std_ms,avg_grad_sync_mean_ms,avg_grad_finish_mean_ms,max_checksum_span,all_valid
+128,cublas_tc,blocking,blocking,0,50,3e-4,5,5,3.8382739999999997,3.844036,0.026662262882208704,0.6946419896601624,106.8,0.8366600265340756,1.2147999999999999,0.0,1.078e-05,yes
+128,cublas_tc,overlap,overlap,256,50,3e-4,5,5,3.928508,3.91909,0.027978706340715608,0.7121967510493961,104.4,0.8944271909999159,0.0,0.6858,7.698e-06,yes
+128,custom,blocking,blocking,0,50,3e-4,5,5,4.826268599999999,4.826953,0.011462882918358777,0.23751025623312344,85.0,0.0,1.5146000000000002,0.0,1.029e-05,yes
+128,custom,overlap,overlap,256,50,3e-4,5,5,4.9709798,4.969994,0.010961274889354845,0.22050531948158075,82.2,0.4472135954999579,0.0,0.6439999999999999,9.303e-06,yes

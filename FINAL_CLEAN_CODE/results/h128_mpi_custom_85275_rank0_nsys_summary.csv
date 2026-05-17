@@ -1,0 +1,23 @@
+profile,kind,name,calls,total_ms,avg_us,total_mb
+h128_mpi_custom_85275_rank0,kernel,"gemm_splitk_AT_kernel(const float *, const float *, float *, int, int, int, int)",210,7.33307,34.919380952380955,
+h128_mpi_custom_85275_rank0,kernel,"gemm_v2_BT_kernel(const float *, const float *, float *, int, int, int, bool)",180,4.720798,26.226655555555556,
+h128_mpi_custom_85275_rank0,kernel,"gemm_v2_kernel(const float *, const float *, float *, int, int, int, bool)",90,3.135015,34.8335,
+h128_mpi_custom_85275_rank0,kernel,"gemm_v2_batched_kernel(const float *, const float *, float *, int, int, int, int, int, int)",90,1.556181,17.2909,
+h128_mpi_custom_85275_rank0,kernel,"gemm_batched_AT_kernel(const float *, const float *, float *, int, int, int, int, int, int)",60,1.07545,17.924166666666668,
+h128_mpi_custom_85275_rank0,kernel,"<unnamed>::layernorm_backward_dweight_kernel(const float *, const float *, const float *, const float *, float *, float *, int, int)",60,0.735835,12.263916666666667,
+h128_mpi_custom_85275_rank0,kernel,"void <unnamed>::layernorm_backward_dx_kernel<(bool)1>(const float *, const float *, const float *, const float *, const float *, float *, int)",60,0.617532,10.292200000000001,
+h128_mpi_custom_85275_rank0,kernel,"fused_relu_backward_bias_backward_kernel(const float *, const float *, float *, float *, int, int)",30,0.569435,18.981166666666667,
+h128_mpi_custom_85275_rank0,kernel,"scale_softmax_kernel(float *, int, float)",30,0.550427,18.347566666666665,
+h128_mpi_custom_85275_rank0,kernel,"gemm_reg_kernel(const float *, const float *, float *, int, int, int, bool)",30,0.475199,15.839966666666667,
+h128_mpi_custom_85275_rank0,kernel,"compute_ds_kernel(const float *, const float *, const float *, const float *, float *, int, int)",30,0.458431,15.281033333333333,
+h128_mpi_custom_85275_rank0,kernel,"gemm_v2_batched_BT_kernel(const float *, const float *, float *, int, int, int, int, int, int)",60,0.447359,7.455983333333333,
+h128_mpi_custom_85275_rank0,kernel,"gemm_BT_kernel(const float *, const float *, float *, int, int, int, bool)",30,0.333341,11.111366666666667,
+h128_mpi_custom_85275_rank0,kernel,"adam_clipped_kernel(float *, const float *, float *, float *, const float *, float, float, float, float, float, float, float, int)",30,0.328414,10.947133333333333,
+h128_mpi_custom_85275_rank0,kernel,"bias_relu_kernel_vec4(const float4 *, const float4 *, float4 *, int, int)",30,0.2856,9.52,
+h128_mpi_custom_85275_rank0,kernel,"residual_layernorm_save_kernel(const float *, const float *, const float *, const float *, float *, float *, float *, float *, int, float)",30,0.264735,8.8245,
+h128_mpi_custom_85275_rank0,kernel,"layernorm_save_kernel(const float *, const float *, const float *, float *, float *, float *, int, float)",30,0.218177,7.272566666666666,
+h128_mpi_custom_85275_rank0,kernel,"cross_entropy_kernel(const float *, const int *, float *, float *, int, float)",30,0.151039,5.034633333333333,
+h128_mpi_custom_85275_rank0,kernel,"bias_add_residual_add_kernel_vec4(const float4 *, const float4 *, const float4 *, float4 *, int, int)",30,0.148767,4.9589,
+h128_mpi_custom_85275_rank0,kernel,"scale_kernel(float *, float, int)",120,0.147677,1.2306416666666666,
+h128_mpi_custom_85275_rank0,memcpy,Host-to-Device,124,4.016701,32.39275,35.493888
+h128_mpi_custom_85275_rank0,memcpy,Device-to-Host,122,2.226417,18.249319672131147,27.601412
