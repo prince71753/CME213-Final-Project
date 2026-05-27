@@ -299,7 +299,6 @@ void DistributedContext::start_async_gradient_sync(float* d_buf, int count) {
 #endif
 
     if (use_device_async) {
-        CUDA_CHECK(cudaDeviceSynchronize());
         pending.host_staged = false;
         MPI_Iallreduce(MPI_IN_PLACE, d_buf, count, MPI_FLOAT, MPI_SUM,
                        MPI_COMM_WORLD, &pending.request);
@@ -322,8 +321,9 @@ void DistributedContext::start_async_gradient_sync(float* d_buf, int count) {
     }
 
     pending.h_buf = host_bucket.data;
-    CUDA_CHECK(cudaMemcpy(pending.h_buf, d_buf, count * sizeof(float),
-                          cudaMemcpyDeviceToHost));
+    CUDA_CHECK(cudaMemcpyAsync(pending.h_buf, d_buf, count * sizeof(float),
+                               cudaMemcpyDeviceToHost, cudaStreamPerThread));
+    CUDA_CHECK(cudaStreamSynchronize(cudaStreamPerThread));
     MPI_Iallreduce(MPI_IN_PLACE, pending.h_buf, count, MPI_FLOAT,
                    MPI_SUM, MPI_COMM_WORLD, &pending.request);
     auto t1 = std::chrono::high_resolution_clock::now();
@@ -347,7 +347,6 @@ void DistributedContext::finish_async_gradient_syncs() {
                 return pending->done.load(std::memory_order_acquire) != 0;
             });
         }
-        CUDA_CHECK(cudaDeviceSynchronize());
         for (auto* pending : pending_threaded_syncs) {
             if (!defer_gradient_average_to_adam) {
                 scale_buffer(pending->d_buf, 1.0f / (float)world_size,
@@ -420,8 +419,12 @@ void DistributedContext::comm_worker_loop() {
         return;
     CUDA_CHECK(cudaSetDevice(local_device));
 
+    const int kBatchThresholdBytes = 128 * 1024;
+
     while (true) {
-        ThreadedGradientSync* pending = nullptr;
+        std::vector<ThreadedGradientSync*> batch;
+        int batch_size_bytes = 0;
+
         {
             std::unique_lock<std::mutex> lock(threaded_sync_mutex);
             threaded_sync_cv.wait(lock, [&]() {
@@ -432,23 +435,43 @@ void DistributedContext::comm_worker_loop() {
                     break;
                 continue;
             }
-            pending = threaded_sync_queue.front();
+
+            ThreadedGradientSync* first = threaded_sync_queue.front();
             threaded_sync_queue.pop_front();
+            batch.push_back(first);
+            batch_size_bytes = first->count * sizeof(float);
+
+            if (batch_size_bytes >= kBatchThresholdBytes) {
+                lock.unlock();
+            } else {
+                while (!threaded_sync_queue.empty()) {
+                    ThreadedGradientSync* next = threaded_sync_queue.front();
+                    int next_size = next->count * sizeof(float);
+                    if (batch_size_bytes + next_size > kBatchThresholdBytes * 2)
+                        break;
+                    threaded_sync_queue.pop_front();
+                    batch.push_back(next);
+                    batch_size_bytes += next_size;
+                }
+                lock.unlock();
+            }
         }
 
-        {
-            NvtxRange range("openmp_comm_event_wait");
-            CUDA_CHECK(cudaEventSynchronize(pending->ready_event));
+        for (auto* pending : batch) {
+            {
+                NvtxRange range("openmp_comm_event_wait");
+                CUDA_CHECK(cudaEventSynchronize(pending->ready_event));
+            }
+            {
+                NvtxRange range("openmp_comm_mpi_allreduce");
+                int status = MPI_Allreduce(MPI_IN_PLACE, pending->d_buf,
+                                           pending->count, MPI_FLOAT, MPI_SUM,
+                                           MPI_COMM_WORLD);
+                if (status != MPI_SUCCESS)
+                    MPI_Abort(MPI_COMM_WORLD, status);
+            }
+            pending->done.store(1, std::memory_order_release);
         }
-        {
-            NvtxRange range("openmp_comm_mpi_allreduce");
-            int status = MPI_Allreduce(MPI_IN_PLACE, pending->d_buf,
-                                       pending->count, MPI_FLOAT, MPI_SUM,
-                                       MPI_COMM_WORLD);
-            if (status != MPI_SUCCESS)
-                MPI_Abort(MPI_COMM_WORLD, status);
-        }
-        pending->done.store(1, std::memory_order_release);
         threaded_sync_cv.notify_all();
     }
 #endif
