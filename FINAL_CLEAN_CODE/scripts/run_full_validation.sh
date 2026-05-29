@@ -5,7 +5,7 @@
 #SBATCH --ntasks-per-node=4
 #SBATCH -o logs/full_validation_%j.out
 #SBATCH -e logs/full_validation_%j.err
-#SBATCH --time=00:45:00
+#SBATCH --time=00:30:00
 
 set -euo pipefail
 

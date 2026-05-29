@@ -1,6 +1,7 @@
 // gemm backends for custom cuda and cublas paths.
 #include "kernels.h"
 #include "common.h"
+#include <cstdint>
 
 #ifndef SPLITK_TARGET_BLOCKS
 #define SPLITK_TARGET_BLOCKS 216
@@ -271,8 +272,16 @@ void cublas_lt_NT_drelu_bgrad(const float* A, const float* B,
 }
 
 inline cublasComputeType_t compute_type(GemmBackend backend) {
-    return backend_uses_cublas_tc(backend) ? CUBLAS_COMPUTE_32F_FAST_16F
-                                           : CUBLAS_COMPUTE_32F;
+
+    const char* strict = getenv("CME213_STRICT_FP32");
+
+    if (strict && atoi(strict) == 1) {
+        return CUBLAS_COMPUTE_32F;
+    }
+
+    return backend_uses_cublas_tc(backend)
+        ? CUBLAS_COMPUTE_32F_FAST_16F
+        : CUBLAS_COMPUTE_32F;
 }
 inline cublasGemmAlgo_t gemm_algo(GemmBackend backend) {
     return backend_uses_cublas_tc(backend) ? CUBLAS_GEMM_DEFAULT_TENSOR_OP
@@ -281,16 +290,27 @@ inline cublasGemmAlgo_t gemm_algo(GemmBackend backend) {
 
 void cublas_gemm_NN(const float* A, const float* B, float* C,
                      int M, int N, int K, float beta, GemmBackend backend) {
+
     static const float alpha = 1.0f;
-    CUBLAS_CHECK(cublasGemmEx(cublas_handle(),
-                               CUBLAS_OP_N, CUBLAS_OP_N,
-                               N, M, K,
-                               &alpha,
-                               B, CUDA_R_32F, N,
-                               A, CUDA_R_32F, K,
-                               &beta,
-                               C, CUDA_R_32F, N,
-                               compute_type(backend), gemm_algo(backend)));
+
+    auto handle = cublas_handle();
+
+    CUBLAS_CHECK(
+        cublasSetMathMode(handle, CUBLAS_DEFAULT_MATH)
+    );
+
+    CUBLAS_CHECK(cublasGemmEx(
+        handle,
+        CUBLAS_OP_N, CUBLAS_OP_N,
+        N, M, K,
+        &alpha,
+        B, CUDA_R_32F, N,
+        A, CUDA_R_32F, K,
+        &beta,
+        C, CUDA_R_32F, N,
+        compute_type(backend),
+        gemm_algo(backend)
+    ));
 }
 
 void cublas_gemm_TN(const float* A, const float* B, float* C,

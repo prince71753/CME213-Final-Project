@@ -1,0 +1,5 @@
+=== LayerNorm Correctness & Performance Test ===
+
+rows=2048, cols=128
+  max error: 7.152557e-07  PASS
+  time: 0.0070 ms  effective bandwidth: 298.8 GB/s

@@ -1,0 +1,26 @@
+=== GEMM Correctness & Performance Test ===
+
+M=64, N=64, K=64
+  naive  max error: 4.768372e-07  PASS
+  tiled  max error: 7.152557e-07  PASS
+  naive:  0.003 ms (163.4 GFLOP/s)
+  tiled:  0.005 ms (98.6 GFLOP/s)  speedup: 0.60x
+
+M=128, N=128, K=128
+  naive  max error: 7.152557e-07  PASS
+  tiled  max error: 1.430511e-06  PASS
+  naive:  0.006 ms (731.4 GFLOP/s)
+  tiled:  0.006 ms (758.5 GFLOP/s)  speedup: 1.04x
+
+M=256, N=256, K=256
+  naive  max error: 1.668930e-06  PASS
+  tiled  max error: 3.576279e-06  PASS
+  naive:  0.029 ms (1140.7 GFLOP/s)
+  tiled:  0.008 ms (4242.7 GFLOP/s)  speedup: 3.72x
+
+M=512, N=512, K=512
+  naive  max error: 3.337860e-06  PASS
+  tiled  max error: 2.421081e-03  FAIL
+  naive:  0.201 ms (1333.0 GFLOP/s)
+  tiled:  0.022 ms (12014.6 GFLOP/s)  speedup: 9.01x
+

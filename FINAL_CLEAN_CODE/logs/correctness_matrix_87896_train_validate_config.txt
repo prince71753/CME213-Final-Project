@@ -1,0 +1,4 @@
+CME213 environment:
+  (none set)
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Configuration validation: PASS
