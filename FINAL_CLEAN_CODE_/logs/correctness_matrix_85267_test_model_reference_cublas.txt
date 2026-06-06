@@ -1,0 +1,16 @@
+=== End-to-End Model Reference Test ===
+
+  forward loss cpu=1.94580143 gpu=1.94580150 abs_err=6.333e-08 PASS
+  logits max_abs_err=1.436e-09 PASS
+  grad idx    3 numeric= 3.744948e-03 analytic= 3.744948e-03 abs=2.795e-10 rel=3.732e-08
+  grad idx   63 numeric= 0.000000e+00 analytic= 0.000000e+00 abs=0.000e+00 rel=0.000e+00
+  grad idx  203 numeric= 0.000000e+00 analytic= 0.000000e+00 abs=0.000e+00 rel=0.000e+00
+  grad idx  357 numeric=-3.103568e-06 analytic=-3.103567e-06 abs=9.619e-13 rel=1.550e-07
+  grad idx  425 numeric= 4.440892e-13 analytic= 6.084756e-13 abs=1.644e-13 rel=8.009e-02
+  grad idx  557 numeric=-6.094397e-07 analytic=-6.094396e-07 abs=1.110e-13 rel=9.109e-08
+  grad idx  633 numeric=-1.354092e-03 analytic=-1.354092e-03 abs=1.578e-10 rel=5.828e-08
+  grad idx  682 numeric=-3.748085e-03 analytic=-3.748085e-03 abs=1.739e-10 rel=2.320e-08
+  gradient finite-difference max_abs=2.795e-10 max_rel=8.009e-02 PASS
+  adam first-step clip_scale=1.000000 max_update_err=1.812e-09 PASS
+
+=== MODEL REFERENCE TEST PASSED ===

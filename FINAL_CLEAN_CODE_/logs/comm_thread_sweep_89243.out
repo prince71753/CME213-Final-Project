@@ -1,0 +1,1257 @@
+=== Environment ===
+hpcc-gpu-5-1
+0, Quadro RTX 6000, 23040 MiB
+1, Quadro RTX 6000, 23040 MiB
+2, Quadro RTX 6000, 23040 MiB
+3, Quadro RTX 6000, 23040 MiB
+=== GPU state: start ===
+index, name, temperature.gpu, clocks.current.sm [MHz], clocks.current.memory [MHz], power.draw [W], utilization.gpu [%], memory.used [MiB]
+0, Quadro RTX 6000, 56, 1440 MHz, 6500 MHz, 74.11 W, 0 %, 0 MiB
+1, Quadro RTX 6000, 48, 300 MHz, 405 MHz, 30.86 W, 0 %, 0 MiB
+2, Quadro RTX 6000, 41, 300 MHz, 405 MHz, 21.43 W, 0 %, 0 MiB
+3, Quadro RTX 6000, 38, 300 MHz, 405 MHz, 29.89 W, 0 %, 0 MiB
+hidden=512
+repeats=5
+summary_min_repeat=2
+cooldown_sec=5
+steps=50
+buckets_kb=512 1024 2048 4096 8192 16384
+lr=1e-4
+gemm_backend=auto
+run_blocking=1
+case_timeout_sec=120
+=== Build hidden=512 ===
+mkdir -p build_comm_thread_h512_89243
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -c src/kernels/gemm.cu -o build_comm_thread_h512_89243/kernels/gemm.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -c src/kernels/attention.cu -o build_comm_thread_h512_89243/kernels/attention.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -c src/kernels/layernorm.cu -o build_comm_thread_h512_89243/kernels/layernorm.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -c src/kernels/activations.cu -o build_comm_thread_h512_89243/kernels/activations.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -c src/kernels/embedding.cu -o build_comm_thread_h512_89243/kernels/embedding.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -c src/model/transformer.cu -o build_comm_thread_h512_89243/model/transformer.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -c src/main.cu -o build_comm_thread_h512_89243/main.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -x cu -c src/data/dataset.cpp -o build_comm_thread_h512_89243/data/dataset.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -x cu -c src/model/distributed.cpp -o build_comm_thread_h512_89243/model/distributed.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -o build_comm_thread_h512_89243/train build_comm_thread_h512_89243/kernels/gemm.o build_comm_thread_h512_89243/kernels/attention.o build_comm_thread_h512_89243/kernels/layernorm.o build_comm_thread_h512_89243/kernels/activations.o build_comm_thread_h512_89243/kernels/embedding.o build_comm_thread_h512_89243/model/transformer.o build_comm_thread_h512_89243/main.o build_comm_thread_h512_89243/data/dataset.o build_comm_thread_h512_89243/model/distributed.o -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -Xlinker -rpath=/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -lcublas -lcublasLt 
+mkdir -p build_comm_thread_mpi_h512_89243
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/kernels/gemm.cu -o build_comm_thread_mpi_h512_89243/kernels/gemm.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/kernels/attention.cu -o build_comm_thread_mpi_h512_89243/kernels/attention.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/kernels/layernorm.cu -o build_comm_thread_mpi_h512_89243/kernels/layernorm.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/kernels/activations.cu -o build_comm_thread_mpi_h512_89243/kernels/activations.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/kernels/embedding.cu -o build_comm_thread_mpi_h512_89243/kernels/embedding.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/model/transformer.cu -o build_comm_thread_mpi_h512_89243/model/transformer.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/main.cu -o build_comm_thread_mpi_h512_89243/main.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -x cu -c src/data/dataset.cpp -o build_comm_thread_mpi_h512_89243/data/dataset.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -x cu -c src/model/distributed.cpp -o build_comm_thread_mpi_h512_89243/model/distributed.o
+mpicxx -o build_comm_thread_mpi_h512_89243/train_mpi build_comm_thread_mpi_h512_89243/kernels/gemm.o build_comm_thread_mpi_h512_89243/kernels/attention.o build_comm_thread_mpi_h512_89243/kernels/layernorm.o build_comm_thread_mpi_h512_89243/kernels/activations.o build_comm_thread_mpi_h512_89243/kernels/embedding.o build_comm_thread_mpi_h512_89243/model/transformer.o build_comm_thread_mpi_h512_89243/main.o build_comm_thread_mpi_h512_89243/data/dataset.o build_comm_thread_mpi_h512_89243/model/distributed.o -pthread -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/lib -Wl,-rpath -Wl,/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/lib -Wl,--enable-new-dtags -lmpi -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/REDIST/cuda/12.3/targets/x86_64-linux/lib -lcudart \
+    -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -Wl,-rpath,/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -lcublas -lcublasLt \
+    -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/lib -Xlinker -rpath -Xlinker /home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/lib -lnccl  -fopenmp
+=== hidden=512 backend=direct sync_mode=blocking bucket_kb=0 repeat=1 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1895
+Epoch 1: avg_logged_loss=3.1895  steps/rank=50  1116ms  367079 tok/s  avg_grad_sync=15.001ms  checksum_span=4.842e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=512 repeat=1 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=512 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2050
+Epoch 1: avg_logged_loss=3.2050  steps/rank=50  729ms  561485 tok/s  avg_grad_start=3.569ms  avg_grad_finish=10.450ms  checksum_span=5.148e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=512 repeat=1 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=512 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2004
+Epoch 1: avg_logged_loss=3.2004  steps/rank=50  477ms  859068 tok/s  avg_grad_start=0.013ms  avg_grad_finish=8.527ms  checksum_span=5.443e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=1024 repeat=1 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=1024 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1880
+Epoch 1: avg_logged_loss=3.1880  steps/rank=50  754ms  543470 tok/s  avg_grad_start=3.574ms  avg_grad_finish=10.880ms  checksum_span=5.190e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=1024 repeat=1 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=1024 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1872
+Epoch 1: avg_logged_loss=3.1872  steps/rank=50  470ms  871767 tok/s  avg_grad_start=0.013ms  avg_grad_finish=8.378ms  checksum_span=2.286e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=2048 repeat=1 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=2048 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2124
+Epoch 1: avg_logged_loss=3.2124  steps/rank=50  746ms  548902 tok/s  avg_grad_start=3.579ms  avg_grad_finish=10.721ms  checksum_span=4.366e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=2048 repeat=1 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=2048 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1998
+Epoch 1: avg_logged_loss=3.1998  steps/rank=50  460ms  890650 tok/s  avg_grad_start=0.010ms  avg_grad_finish=8.198ms  checksum_span=7.019e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=4096 repeat=1 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=4096 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1846
+Epoch 1: avg_logged_loss=3.1846  steps/rank=50  739ms  554118 tok/s  avg_grad_start=3.577ms  avg_grad_finish=10.616ms  checksum_span=7.835e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=4096 repeat=1 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=4096 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1933
+Epoch 1: avg_logged_loss=3.1933  steps/rank=50  468ms  875587 tok/s  avg_grad_start=0.011ms  avg_grad_finish=8.382ms  checksum_span=4.676e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=8192 repeat=1 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=8192 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2041
+Epoch 1: avg_logged_loss=3.2041  steps/rank=50  716ms  571806 tok/s  avg_grad_start=3.517ms  avg_grad_finish=10.199ms  checksum_span=6.411e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=8192 repeat=1 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=8192 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1859
+Epoch 1: avg_logged_loss=3.1859  steps/rank=50  477ms  858404 tok/s  avg_grad_start=0.009ms  avg_grad_finish=8.516ms  checksum_span=4.466e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=16384 repeat=1 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=16384 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1907
+Epoch 1: avg_logged_loss=3.1907  steps/rank=50  886ms  462430 tok/s  avg_grad_start=3.482ms  avg_grad_finish=13.629ms  checksum_span=3.646e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=16384 repeat=1 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=16384 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1854
+Epoch 1: avg_logged_loss=3.1854  steps/rank=50  543ms  753895 tok/s  avg_grad_start=0.010ms  avg_grad_finish=9.813ms  checksum_span=4.361e-05
+=== hidden=512 backend=direct sync_mode=blocking bucket_kb=0 repeat=2 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1885
+Epoch 1: avg_logged_loss=3.1885  steps/rank=50  786ms  521306 tok/s  avg_grad_sync=14.735ms  checksum_span=4.790e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=512 repeat=2 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=512 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1715
+Epoch 1: avg_logged_loss=3.1715  steps/rank=50  747ms  548296 tok/s  avg_grad_start=3.595ms  avg_grad_finish=10.705ms  checksum_span=3.830e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=512 repeat=2 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=512 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1810
+Epoch 1: avg_logged_loss=3.1810  steps/rank=50  467ms  876959 tok/s  avg_grad_start=0.012ms  avg_grad_finish=8.368ms  checksum_span=2.832e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=1024 repeat=2 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=1024 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1878
+Epoch 1: avg_logged_loss=3.1878  steps/rank=50  758ms  540435 tok/s  avg_grad_start=3.574ms  avg_grad_finish=11.000ms  checksum_span=6.286e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=1024 repeat=2 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=1024 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1843
+Epoch 1: avg_logged_loss=3.1843  steps/rank=50  469ms  872443 tok/s  avg_grad_start=0.012ms  avg_grad_finish=8.385ms  checksum_span=2.892e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=2048 repeat=2 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=2048 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1860
+Epoch 1: avg_logged_loss=3.1860  steps/rank=50  740ms  553612 tok/s  avg_grad_start=3.565ms  avg_grad_finish=10.589ms  checksum_span=4.666e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=2048 repeat=2 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=2048 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1769
+Epoch 1: avg_logged_loss=3.1769  steps/rank=50  459ms  892049 tok/s  avg_grad_start=0.011ms  avg_grad_finish=8.186ms  checksum_span=3.619e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=4096 repeat=2 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=4096 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2110
+Epoch 1: avg_logged_loss=3.2110  steps/rank=50  745ms  550160 tok/s  avg_grad_start=3.571ms  avg_grad_finish=10.667ms  checksum_span=1.821e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=4096 repeat=2 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=4096 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1872
+Epoch 1: avg_logged_loss=3.1872  steps/rank=50  468ms  874805 tok/s  avg_grad_start=0.011ms  avg_grad_finish=8.355ms  checksum_span=2.443e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=8192 repeat=2 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=8192 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1809
+Epoch 1: avg_logged_loss=3.1809  steps/rank=50  718ms  570851 tok/s  avg_grad_start=3.512ms  avg_grad_finish=10.255ms  checksum_span=5.862e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=8192 repeat=2 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=8192 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1837
+Epoch 1: avg_logged_loss=3.1837  steps/rank=50  480ms  852758 tok/s  avg_grad_start=0.009ms  avg_grad_finish=8.619ms  checksum_span=4.577e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=16384 repeat=2 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=16384 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1756
+Epoch 1: avg_logged_loss=3.1756  steps/rank=50  898ms  456153 tok/s  avg_grad_start=3.479ms  avg_grad_finish=13.870ms  checksum_span=3.999e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=16384 repeat=2 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=16384 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2072
+Epoch 1: avg_logged_loss=3.2072  steps/rank=50  544ms  753399 tok/s  avg_grad_start=0.010ms  avg_grad_finish=9.849ms  checksum_span=3.665e-05
+=== hidden=512 backend=direct sync_mode=blocking bucket_kb=0 repeat=3 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1814
+Epoch 1: avg_logged_loss=3.1814  steps/rank=50  789ms  519294 tok/s  avg_grad_sync=14.768ms  checksum_span=2.861e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=512 repeat=3 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=512 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1760
+Epoch 1: avg_logged_loss=3.1760  steps/rank=50  732ms  559594 tok/s  avg_grad_start=3.585ms  avg_grad_finish=10.470ms  checksum_span=2.256e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=512 repeat=3 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=512 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1826
+Epoch 1: avg_logged_loss=3.1826  steps/rank=50  468ms  874864 tok/s  avg_grad_start=0.012ms  avg_grad_finish=8.403ms  checksum_span=3.500e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=1024 repeat=3 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=1024 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1975
+Epoch 1: avg_logged_loss=3.1975  steps/rank=50  731ms  560489 tok/s  avg_grad_start=3.599ms  avg_grad_finish=10.406ms  checksum_span=2.398e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=1024 repeat=3 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=1024 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1896
+Epoch 1: avg_logged_loss=3.1896  steps/rank=50  476ms  859814 tok/s  avg_grad_start=0.013ms  avg_grad_finish=8.570ms  checksum_span=3.779e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=2048 repeat=3 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=2048 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1778
+Epoch 1: avg_logged_loss=3.1778  steps/rank=50  740ms  553612 tok/s  avg_grad_start=3.573ms  avg_grad_finish=10.602ms  checksum_span=7.261e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=2048 repeat=3 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=2048 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1942
+Epoch 1: avg_logged_loss=3.1942  steps/rank=50  460ms  891273 tok/s  avg_grad_start=0.011ms  avg_grad_finish=8.281ms  checksum_span=1.767e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=4096 repeat=3 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=4096 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1818
+Epoch 1: avg_logged_loss=3.1818  steps/rank=50  742ms  551689 tok/s  avg_grad_start=3.568ms  avg_grad_finish=10.621ms  checksum_span=6.452e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=4096 repeat=3 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=4096 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1851
+Epoch 1: avg_logged_loss=3.1851  steps/rank=50  457ms  895482 tok/s  avg_grad_start=0.011ms  avg_grad_finish=8.200ms  checksum_span=3.221e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=8192 repeat=3 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=8192 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1790
+Epoch 1: avg_logged_loss=3.1790  steps/rank=50  716ms  572343 tok/s  avg_grad_start=3.526ms  avg_grad_finish=10.159ms  checksum_span=2.660e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=8192 repeat=3 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=8192 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1912
+Epoch 1: avg_logged_loss=3.1912  steps/rank=50  483ms  847184 tok/s  avg_grad_start=0.009ms  avg_grad_finish=8.634ms  checksum_span=5.853e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=16384 repeat=3 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=16384 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1737
+Epoch 1: avg_logged_loss=3.1737  steps/rank=50  874ms  468393 tok/s  avg_grad_start=3.475ms  avg_grad_finish=13.396ms  checksum_span=3.158e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=16384 repeat=3 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=16384 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1823
+Epoch 1: avg_logged_loss=3.1823  steps/rank=50  543ms  753721 tok/s  avg_grad_start=0.010ms  avg_grad_finish=9.845ms  checksum_span=3.152e-05
+=== hidden=512 backend=direct sync_mode=blocking bucket_kb=0 repeat=4 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1833
+Epoch 1: avg_logged_loss=3.1833  steps/rank=50  794ms  516018 tok/s  avg_grad_sync=14.803ms  checksum_span=4.125e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=512 repeat=4 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=512 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2067
+Epoch 1: avg_logged_loss=3.2067  steps/rank=50  752ms  544517 tok/s  avg_grad_start=3.572ms  avg_grad_finish=10.836ms  checksum_span=2.747e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=512 repeat=4 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=512 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1835
+Epoch 1: avg_logged_loss=3.1835  steps/rank=50  477ms  858850 tok/s  avg_grad_start=0.013ms  avg_grad_finish=8.567ms  checksum_span=3.025e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=1024 repeat=4 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=1024 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1833
+Epoch 1: avg_logged_loss=3.1833  steps/rank=50  743ms  551469 tok/s  avg_grad_start=3.580ms  avg_grad_finish=10.637ms  checksum_span=6.712e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=1024 repeat=4 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=1024 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1824
+Epoch 1: avg_logged_loss=3.1824  steps/rank=50  467ms  876325 tok/s  avg_grad_start=0.013ms  avg_grad_finish=8.386ms  checksum_span=1.145e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=2048 repeat=4 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=2048 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1754
+Epoch 1: avg_logged_loss=3.1754  steps/rank=50  744ms  550340 tok/s  avg_grad_start=3.562ms  avg_grad_finish=10.662ms  checksum_span=1.616e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=2048 repeat=4 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=2048 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1803
+Epoch 1: avg_logged_loss=3.1803  steps/rank=50  467ms  876152 tok/s  avg_grad_start=0.011ms  avg_grad_finish=8.360ms  checksum_span=5.085e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=4096 repeat=4 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=4096 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1872
+Epoch 1: avg_logged_loss=3.1872  steps/rank=50  754ms  543272 tok/s  avg_grad_start=3.563ms  avg_grad_finish=10.861ms  checksum_span=3.623e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=4096 repeat=4 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=4096 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1895
+Epoch 1: avg_logged_loss=3.1895  steps/rank=50  461ms  888974 tok/s  avg_grad_start=0.011ms  avg_grad_finish=8.241ms  checksum_span=6.113e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=8192 repeat=4 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=8192 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1794
+Epoch 1: avg_logged_loss=3.1794  steps/rank=50  713ms  574686 tok/s  avg_grad_start=3.505ms  avg_grad_finish=10.129ms  checksum_span=1.565e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=8192 repeat=4 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=8192 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2032
+Epoch 1: avg_logged_loss=3.2032  steps/rank=50  481ms  851113 tok/s  avg_grad_start=0.009ms  avg_grad_finish=8.596ms  checksum_span=3.709e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=16384 repeat=4 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=16384 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1788
+Epoch 1: avg_logged_loss=3.1788  steps/rank=50  876ms  467563 tok/s  avg_grad_start=3.475ms  avg_grad_finish=13.423ms  checksum_span=6.169e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=16384 repeat=4 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=16384 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1919
+Epoch 1: avg_logged_loss=3.1919  steps/rank=50  545ms  751897 tok/s  avg_grad_start=0.010ms  avg_grad_finish=9.827ms  checksum_span=4.888e-05
+=== hidden=512 backend=direct sync_mode=blocking bucket_kb=0 repeat=5 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1847
+Epoch 1: avg_logged_loss=3.1847  steps/rank=50  789ms  519047 tok/s  avg_grad_sync=14.741ms  checksum_span=5.656e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=512 repeat=5 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=512 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1912
+Epoch 1: avg_logged_loss=3.1912  steps/rank=50  737ms  556082 tok/s  avg_grad_start=3.584ms  avg_grad_finish=10.476ms  checksum_span=1.381e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=512 repeat=5 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=512 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1856
+Epoch 1: avg_logged_loss=3.1856  steps/rank=50  471ms  870046 tok/s  avg_grad_start=0.013ms  avg_grad_finish=8.386ms  checksum_span=3.419e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=1024 repeat=5 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=1024 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1864
+Epoch 1: avg_logged_loss=3.1864  steps/rank=50  745ms  549634 tok/s  avg_grad_start=3.562ms  avg_grad_finish=10.679ms  checksum_span=5.970e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=1024 repeat=5 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=1024 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1755
+Epoch 1: avg_logged_loss=3.1755  steps/rank=50  469ms  873763 tok/s  avg_grad_start=0.013ms  avg_grad_finish=8.413ms  checksum_span=3.761e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=2048 repeat=5 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=2048 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1849
+Epoch 1: avg_logged_loss=3.1849  steps/rank=50  745ms  549954 tok/s  avg_grad_start=3.573ms  avg_grad_finish=10.669ms  checksum_span=4.490e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=2048 repeat=5 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=2048 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1943
+Epoch 1: avg_logged_loss=3.1943  steps/rank=50  468ms  874667 tok/s  avg_grad_start=0.011ms  avg_grad_finish=8.424ms  checksum_span=3.609e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=4096 repeat=5 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=4096 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2003
+Epoch 1: avg_logged_loss=3.2003  steps/rank=50  741ms  552418 tok/s  avg_grad_start=3.574ms  avg_grad_finish=10.610ms  checksum_span=5.067e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=4096 repeat=5 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=4096 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1893
+Epoch 1: avg_logged_loss=3.1893  steps/rank=50  469ms  872725 tok/s  avg_grad_start=0.011ms  avg_grad_finish=8.360ms  checksum_span=5.036e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=8192 repeat=5 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=8192 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1830
+Epoch 1: avg_logged_loss=3.1830  steps/rank=50  718ms  570134 tok/s  avg_grad_start=3.515ms  avg_grad_finish=10.216ms  checksum_span=8.065e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=8192 repeat=5 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=8192 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2083
+Epoch 1: avg_logged_loss=3.2083  steps/rank=50  482ms  850165 tok/s  avg_grad_start=0.009ms  avg_grad_finish=8.631ms  checksum_span=3.228e-05
+=== hidden=512 backend=pinned sync_mode=overlap bucket_kb=16384 repeat=5 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=16384 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1998
+Epoch 1: avg_logged_loss=3.1998  steps/rank=50  879ms  465759 tok/s  avg_grad_start=3.479ms  avg_grad_finish=13.462ms  checksum_span=1.059e-05
+=== hidden=512 backend=openmp_thread sync_mode=overlap bucket_kb=16384 repeat=5 steps=50 lr=1e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=16384 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1896
+Epoch 1: avg_logged_loss=3.1896  steps/rank=50  541ms  757217 tok/s  avg_grad_start=0.009ms  avg_grad_finish=9.825ms  checksum_span=3.950e-05
+=== GPU state: end ===
+index, name, temperature.gpu, clocks.current.sm [MHz], clocks.current.memory [MHz], power.draw [W], utilization.gpu [%], memory.used [MiB]
+0, Quadro RTX 6000, 58, 1440 MHz, 6500 MHz, 76.01 W, 0 %, 0 MiB
+1, Quadro RTX 6000, 55, 300 MHz, 405 MHz, 32.04 W, 0 %, 0 MiB
+2, Quadro RTX 6000, 51, 300 MHz, 405 MHz, 23.12 W, 0 %, 0 MiB
+3, Quadro RTX 6000, 45, 300 MHz, 405 MHz, 31.37 W, 0 %, 0 MiB
+=== Summarize ===
+Wrote results/training_bucket_sweep_comm_thread_89243.csv
+Wrote results/training_bucket_sweep_summary_comm_thread_89243.csv
+=== DONE job=89243 status=0 ===
