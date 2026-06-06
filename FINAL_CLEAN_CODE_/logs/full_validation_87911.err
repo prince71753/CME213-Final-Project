@@ -1,7 +1,0 @@
-tests/benchmark_all.cu(9): warning #177-D: function "max_err" was declared but never referenced
-  static float max_err(const float* a, const float* b, int n) {
-               ^
-
-Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
-
-Validation failed in test_gemm; see logs/full_validation_87911_test_gemm.txt
