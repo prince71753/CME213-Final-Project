@@ -1,0 +1,10 @@
+=== Fusion Correctness & Performance Test ===
+
+  bias+ReLU rows=2048 cols=512 err=0.000e+00 PASS
+    unfused 0.0269 ms | fused 0.0156 ms | speedup 1.72x
+  residual+LayerNorm fwd rows=2048 cols=128 res_err=0.000e+00 out_err=0.000e+00 PASS
+    unfused 0.0131 ms | fused 0.0100 ms | speedup 1.31x
+  LayerNorm bwd+residual rows=2048 cols=128 res_err=5.960e-08 dgamma_err=0.000e+00 dbeta_err=0.000e+00 PASS
+    unfused 0.0294 ms | fused 0.0264 ms | speedup 1.11x
+
+=== FUSION TEST PASSED ===

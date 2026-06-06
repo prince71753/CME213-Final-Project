@@ -1,0 +1,137 @@
+=== Environment ===
+hpcc-gpu-5-1
+0, Quadro RTX 6000, 23040 MiB
+1, Quadro RTX 6000, 23040 MiB
+2, Quadro RTX 6000, 23040 MiB
+3, Quadro RTX 6000, 23040 MiB
+=== GPU state: start ===
+index, name, temperature.gpu, clocks.current.sm [MHz], clocks.current.memory [MHz], power.draw [W], utilization.gpu [%], memory.used [MiB]
+0, Quadro RTX 6000, 55, 1440 MHz, 6500 MHz, 73.70 W, 0 %, 0 MiB
+1, Quadro RTX 6000, 49, 300 MHz, 405 MHz, 30.87 W, 0 %, 0 MiB
+2, Quadro RTX 6000, 40, 300 MHz, 405 MHz, 21.30 W, 0 %, 0 MiB
+3, Quadro RTX 6000, 38, 300 MHz, 405 MHz, 30.03 W, 0 %, 0 MiB
+hidden=128
+ranks=4
+batch_size=32
+steps=12
+lr=3e-4
+bucket_kb=256
+=== Build hidden=128 batch=32 ===
+mkdir -p build_mpi_trajectory_h128_89250
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=128 -DFF_DIM=512 -DHEAD_DIM=32 -DBATCH_SIZE=32 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/kernels/gemm.cu -o build_mpi_trajectory_h128_89250/kernels/gemm.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=128 -DFF_DIM=512 -DHEAD_DIM=32 -DBATCH_SIZE=32 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/kernels/attention.cu -o build_mpi_trajectory_h128_89250/kernels/attention.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=128 -DFF_DIM=512 -DHEAD_DIM=32 -DBATCH_SIZE=32 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/kernels/layernorm.cu -o build_mpi_trajectory_h128_89250/kernels/layernorm.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=128 -DFF_DIM=512 -DHEAD_DIM=32 -DBATCH_SIZE=32 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/kernels/activations.cu -o build_mpi_trajectory_h128_89250/kernels/activations.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=128 -DFF_DIM=512 -DHEAD_DIM=32 -DBATCH_SIZE=32 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/kernels/embedding.cu -o build_mpi_trajectory_h128_89250/kernels/embedding.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=128 -DFF_DIM=512 -DHEAD_DIM=32 -DBATCH_SIZE=32 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/model/transformer.cu -o build_mpi_trajectory_h128_89250/model/transformer.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=128 -DFF_DIM=512 -DHEAD_DIM=32 -DBATCH_SIZE=32 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/main.cu -o build_mpi_trajectory_h128_89250/main.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=128 -DFF_DIM=512 -DHEAD_DIM=32 -DBATCH_SIZE=32 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -x cu -c src/data/dataset.cpp -o build_mpi_trajectory_h128_89250/data/dataset.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=128 -DFF_DIM=512 -DHEAD_DIM=32 -DBATCH_SIZE=32 -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -x cu -c src/model/distributed.cpp -o build_mpi_trajectory_h128_89250/model/distributed.o
+mpicxx -o build_mpi_trajectory_h128_89250/train_mpi build_mpi_trajectory_h128_89250/kernels/gemm.o build_mpi_trajectory_h128_89250/kernels/attention.o build_mpi_trajectory_h128_89250/kernels/layernorm.o build_mpi_trajectory_h128_89250/kernels/activations.o build_mpi_trajectory_h128_89250/kernels/embedding.o build_mpi_trajectory_h128_89250/model/transformer.o build_mpi_trajectory_h128_89250/main.o build_mpi_trajectory_h128_89250/data/dataset.o build_mpi_trajectory_h128_89250/model/distributed.o -pthread -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/lib -Wl,-rpath -Wl,/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/lib -Wl,--enable-new-dtags -lmpi -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/REDIST/cuda/12.3/targets/x86_64-linux/lib -lcudart \
+    -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -Wl,-rpath,/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -lcublas -lcublasLt \
+    -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/lib -Xlinker -rpath -Xlinker /home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/lib -lnccl  -fopenmp
+=== trajectory_case name=blocking_direct hidden=128 ranks=4 batch=32 mode=blocking comm_thread=no bucket_kb=0 steps=12 lr=3e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=128 heads=4 ff=512 batch=32
+Parameters: 222592 (869.50 KB)
+Training: epochs=1 lr=3.00e-04 max_steps=12 world_size=4 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Trajectory trace: enabled, reporting loss and parameter statistics after each step
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=12 dropped=0
+TRAJECTORY epoch=1 step=1 loss=4.17439795 param_sum=251.18445261059989 param_sumsq=285.54760979746055 param_maxabs=1.00029778 param_hash=2cc84934f48694d6 sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=2 loss=4.1741004 param_sum=262.31956272092566 param_sumsq=285.57509335667834 param_maxabs=1.00058401 param_hash=4ab6759ca51a5460 sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=3 loss=4.17232227 param_sum=277.27614640578031 param_sumsq=285.66368415646656 param_maxabs=1.00079346 param_hash=32fb84ffe00135fa sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=4 loss=4.16797256 param_sum=293.86515799326617 param_sumsq=285.80814236138212 param_maxabs=1.00103939 param_hash=243576b05cea7590 sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=5 loss=4.16106796 param_sum=312.61700321932085 param_sumsq=285.95788433485001 param_maxabs=1.00130284 param_hash=fc493219a2d8463e sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=6 loss=4.14998341 param_sum=332.29759352659858 param_sumsq=286.12513671626311 param_maxabs=1.00155234 param_hash=d5fb852df969e5ca sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=7 loss=4.13365078 param_sum=350.27569927616605 param_sumsq=286.38392395423057 param_maxabs=1.00172341 param_hash=a2a4a11dbc7d4cfd sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=8 loss=4.10888863 param_sum=368.15902749757333 param_sumsq=286.68469503379828 param_maxabs=1.00197411 param_hash=a2e5ef19407007d9 sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=9 loss=4.10066462 param_sum=387.10277618703731 param_sumsq=287.01415091248026 param_maxabs=1.00224257 param_hash=8b26c0486701f846 sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=10 loss=4.07256317 param_sum=407.20142105827563 param_sumsq=287.36685632691825 param_maxabs=1.00252283 param_hash=768001e34e6f1b91 sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=11 loss=4.02413225 param_sum=428.3286254954819 param_sumsq=287.74562054996363 param_maxabs=1.00281215 param_hash=4c7a17a9ff6a1af9 sum_span=8.733e-08 sumsq_span=2.827e-09 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=12 loss=3.99501991 param_sum=449.84065314937004 param_sumsq=288.17240145083105 param_maxabs=1.00310957 param_hash=ab3a5eb3a81867b7 sum_span=1.514e-07 sumsq_span=2.449e-07 maxabs_span=0.000e+00
+  epoch 1 | step   12/12 | loss 3.9950
+Epoch 1: avg_logged_loss=3.9950  steps/rank=12  67ms  1466414 tok/s  avg_grad_sync=1.738ms  checksum_span=1.514e-07
+=== trajectory_case name=pinned_overlap hidden=128 ranks=4 batch=32 mode=overlap comm_thread=no bucket_kb=256 steps=12 lr=3e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=128 heads=4 ff=512 batch=32
+Parameters: 222592 (869.50 KB)
+Training: epochs=1 lr=3.00e-04 max_steps=12 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=256 auto_overlap_max_mb=8.0
+Trajectory trace: enabled, reporting loss and parameter statistics after each step
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=12 dropped=0
+TRAJECTORY epoch=1 step=1 loss=4.17439795 param_sum=251.18445181334411 param_sumsq=285.54760996880373 param_maxabs=1.00029778 param_hash=f1a908fbd791d4e1 sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=2 loss=4.1741004 param_sum=262.27426715228603 param_sumsq=285.57586557464049 param_maxabs=1.00058377 param_hash=58d54c40d314b0e1 sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=3 loss=4.17232227 param_sum=277.22702084139928 param_sumsq=285.66620155121251 param_maxabs=1.00079393 param_hash=b84097d59975515e sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=4 loss=4.16797209 param_sum=293.81691655717668 param_sumsq=285.81094809337469 param_maxabs=1.0010407 param_hash=8ae2389fcfcad964 sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=5 loss=4.16106701 param_sum=312.57805588932638 param_sumsq=285.96075086798686 param_maxabs=1.00130427 param_hash=ed420ac567f9f6ae sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=6 loss=4.14998055 param_sum=332.26294821064039 param_sumsq=286.1280912356504 param_maxabs=1.00155342 param_hash=6cc21783f40ba1f0 sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=7 loss=4.13366222 param_sum=350.22800596087291 param_sumsq=286.38683428049302 param_maxabs=1.00172448 param_hash=7450047d0850f41f sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=8 loss=4.10889006 param_sum=368.08644124940474 param_sumsq=286.68707157300639 param_maxabs=1.00197411 param_hash=6368b90410ebcf6d sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=9 loss=4.10066605 param_sum=387.00109738716856 param_sumsq=287.01639019746102 param_maxabs=1.00224257 param_hash=bb1e048e8da6bbb2 sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=10 loss=4.07257748 param_sum=407.07602325696644 param_sumsq=287.36919800613896 param_maxabs=1.00252283 param_hash=2077091b356582bb sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=11 loss=4.02416134 param_sum=428.1915207953607 param_sumsq=287.74773778386736 param_maxabs=1.00281215 param_hash=e4647f22d467de6e sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=12 loss=3.99506235 param_sum=449.71648077845748 param_sumsq=288.17401269797585 param_maxabs=1.00310957 param_hash=97d06306a8c271af sum_span=5.374e-08 sumsq_span=4.621e-10 maxabs_span=0.000e+00
+  epoch 1 | step   12/12 | loss 3.9951
+Epoch 1: avg_logged_loss=3.9951  steps/rank=12  66ms  1491669 tok/s  avg_grad_start=0.667ms  avg_grad_finish=1.143ms  checksum_span=5.374e-08
+=== trajectory_case name=openmp_thread hidden=128 ranks=4 batch=32 mode=overlap comm_thread=yes bucket_kb=256 steps=12 lr=3e-4 ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 3 (MPI_THREAD_MULTIPLE)
+MPI OpenMP comm thread: enabled
+CME213 environment:
+  CME213_COMM_THREAD=1
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=128 heads=4 ff=512 batch=32
+Parameters: 222592 (869.50 KB)
+Training: epochs=1 lr=3.00e-04 max_steps=12 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=256 auto_overlap_max_mb=8.0
+Trajectory trace: enabled, reporting loss and parameter statistics after each step
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=12 dropped=0
+TRAJECTORY epoch=1 step=1 loss=4.17439795 param_sum=251.18445261502367 param_sumsq=285.54760979719907 param_maxabs=1.00029778 param_hash=1f7444d179ed6802 sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=2 loss=4.17410088 param_sum=262.31758540014152 param_sumsq=285.57521299956539 param_maxabs=1.00058401 param_hash=ef1fe5131e59fe72 sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=3 loss=4.17232275 param_sum=277.27560682214607 param_sumsq=285.66280797440555 param_maxabs=1.00079334 param_hash=ac5cd2804f46ff5e sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=4 loss=4.16797209 param_sum=293.87108597949373 param_sumsq=285.80690518166824 param_maxabs=1.00103867 param_hash=088cc1da3d73bdcf sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=5 loss=4.16106749 param_sum=312.60736728854363 param_sumsq=285.95702653954891 param_maxabs=1.00130165 param_hash=aee58d82ba548bdc sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=6 loss=4.14998245 param_sum=332.27617554558492 param_sumsq=286.12425237638581 param_maxabs=1.00155151 param_hash=860f3ed818305c56 sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=7 loss=4.13364553 param_sum=350.25284521454523 param_sumsq=286.38313504110999 param_maxabs=1.00172257 param_hash=42d224d64f755400 sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=8 loss=4.1088829 param_sum=368.13686872024846 param_sumsq=286.68406346351003 param_maxabs=1.00197411 param_hash=bb425a5262d59796 sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=9 loss=4.10065985 param_sum=387.08591516246179 param_sumsq=287.0136426594774 param_maxabs=1.00224257 param_hash=5b2c6cf4921424e3 sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=10 loss=4.07255363 param_sum=407.19324628462527 param_sumsq=287.36664431379478 param_maxabs=1.00252271 param_hash=10e1da3192ff58b6 sum_span=0.000e+00 sumsq_span=0.000e+00 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=11 loss=4.02411366 param_sum=428.33563402904656 param_sumsq=287.74621649663823 param_maxabs=1.00281203 param_hash=fd5229255dcb32a6 sum_span=4.386e-08 sumsq_span=7.115e-09 maxabs_span=0.000e+00
+TRAJECTORY epoch=1 step=12 loss=3.99500036 param_sum=449.85648911345675 param_sumsq=288.17376722111777 param_maxabs=1.00310946 param_hash=39342ed61b01a0ee sum_span=1.505e-07 sumsq_span=1.337e-08 maxabs_span=0.000e+00
+  epoch 1 | step   12/12 | loss 3.9950
+Epoch 1: avg_logged_loss=3.9950  steps/rank=12  64ms  1542168 tok/s  avg_grad_start=0.072ms  avg_grad_finish=1.574ms  checksum_span=1.505e-07
+=== GPU state: end ===
+index, name, temperature.gpu, clocks.current.sm [MHz], clocks.current.memory [MHz], power.draw [W], utilization.gpu [%], memory.used [MiB]
+0, Quadro RTX 6000, 55, 1440 MHz, 6500 MHz, 73.42 W, 2 %, 0 MiB
+1, Quadro RTX 6000, 51, 1890 MHz, 6500 MHz, 88.54 W, 2 %, 0 MiB
+2, Quadro RTX 6000, 43, 1905 MHz, 6500 MHz, 76.63 W, 0 %, 0 MiB
+3, Quadro RTX 6000, 43, 1905 MHz, 6500 MHz, 83.83 W, 0 %, 0 MiB
+=== Summarize ===
+Wrote results/trajectory_validation_89250.csv
+Wrote results/trajectory_validation_summary_89250.csv
+Wrote results/trajectory_validation_89250.md
+=== DONE job=89250 status=0 ===

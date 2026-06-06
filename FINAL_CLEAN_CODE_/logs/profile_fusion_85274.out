@@ -1,0 +1,116 @@
+=== Environment ===
+hpcc-gpu-5-1
+0, Quadro RTX 6000, 23040 MiB
+1, Quadro RTX 6000, 23040 MiB
+2, Quadro RTX 6000, 23040 MiB
+3, Quadro RTX 6000, 23040 MiB
+Build cuda_12.3.r12.3/compiler.33492891_0
+NVIDIA (R) Nsight Compute Command Line Profiler
+tmpdir=/home/cme213/jadbitar/tmp
+=== Build ===
+mkdir -p build_profile_85274
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -c src/kernels/gemm.cu -o build_profile_85274/kernels/gemm.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -c src/kernels/attention.cu -o build_profile_85274/kernels/attention.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -c src/kernels/layernorm.cu -o build_profile_85274/kernels/layernorm.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -c src/kernels/activations.cu -o build_profile_85274/kernels/activations.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -c src/kernels/embedding.cu -o build_profile_85274/kernels/embedding.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -o build_profile_85274/test_fusion_benchmark tests/test_fusion_benchmark.cu build_profile_85274/kernels/gemm.o build_profile_85274/kernels/attention.o build_profile_85274/kernels/layernorm.o build_profile_85274/kernels/activations.o build_profile_85274/kernels/embedding.o -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -Xlinker -rpath=/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -lcublas -lcublasLt 
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -c src/model/transformer.cu -o build_profile_85274/model/transformer.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -x cu -c src/model/distributed.cpp -o build_profile_85274/model/distributed.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -o build_profile_85274/test_model_reference tests/test_model_reference.cu build_profile_85274/kernels/gemm.o build_profile_85274/kernels/attention.o build_profile_85274/kernels/layernorm.o build_profile_85274/kernels/activations.o build_profile_85274/kernels/embedding.o build_profile_85274/model/transformer.o build_profile_85274/model/distributed.o -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -Xlinker -rpath=/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -lcublas -lcublasLt 
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -o build_profile_85274/profile_fusion_kernels tests/profile_fusion_kernels.cu build_profile_85274/kernels/gemm.o build_profile_85274/kernels/attention.o build_profile_85274/kernels/layernorm.o build_profile_85274/kernels/activations.o build_profile_85274/kernels/embedding.o -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -Xlinker -rpath=/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -lcublas -lcublasLt 
+=== Correctness smoke ===
+=== Fusion Correctness & Performance Test ===
+
+  bias+ReLU rows=2048 cols=512 err=0.000e+00 PASS
+    unfused 0.0226 ms | fused 0.0157 ms | speedup 1.44x
+  residual+LayerNorm fwd rows=2048 cols=128 res_err=0.000e+00 out_err=0.000e+00 PASS
+    unfused 0.0099 ms | fused 0.0075 ms | speedup 1.32x
+  LayerNorm bwd+residual rows=2048 cols=128 res_err=5.960e-08 dgamma_err=0.000e+00 dbeta_err=0.000e+00 PASS
+    unfused 0.0222 ms | fused 0.0200 ms | speedup 1.11x
+
+=== FUSION TEST PASSED ===
+=== End-to-End Model Reference Test ===
+
+  forward loss cpu=1.94580143 gpu=1.94580150 abs_err=6.333e-08 PASS
+  logits max_abs_err=1.491e-09 PASS
+  grad idx    3 numeric= 3.744948e-03 analytic= 3.744948e-03 abs=2.795e-10 rel=3.732e-08
+  grad idx   63 numeric= 0.000000e+00 analytic= 0.000000e+00 abs=0.000e+00 rel=0.000e+00
+  grad idx  203 numeric= 0.000000e+00 analytic= 0.000000e+00 abs=0.000e+00 rel=0.000e+00
+  grad idx  357 numeric=-3.103568e-06 analytic=-3.103559e-06 abs=8.465e-12 rel=1.364e-06
+  grad idx  425 numeric= 4.440892e-13 analytic= 6.084749e-13 abs=1.644e-13 rel=8.009e-02
+  grad idx  557 numeric=-6.094397e-07 analytic=-6.094390e-07 abs=7.363e-13 rel=6.041e-07
+  grad idx  633 numeric=-1.354092e-03 analytic=-1.354089e-03 abs=3.335e-09 rel=1.231e-06
+  grad idx  682 numeric=-3.748085e-03 analytic=-3.748085e-03 abs=2.918e-10 rel=3.892e-08
+  gradient finite-difference max_abs=3.335e-09 max_rel=8.009e-02 PASS
+  adam first-step clip_scale=1.000000 max_update_err=1.812e-09 PASS
+
+=== MODEL REFERENCE TEST PASSED ===
+=== Profiling bias_relu_unfused ===
+==PROF== Connected to process 590429 (/home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/build_profile_85274/profile_fusion_kernels)
+==PROF== Profiling "bias_add_kernel" - 0: 0%....50%....100% - 36 passes
+==PROF== Profiling "relu_forward_kernel" - 1: 0%....50%....100% - 35 passes
+check bias_relu max_abs=0.000e+00 PASS
+PROFILE_CASE bias_relu_unfused rows=2048 cols=512
+PROFILE_TIMING case=bias_relu_unfused runtime_us=3745533.000 estimated_read_bytes=12582912 estimated_write_bytes=8388608 estimated_total_bytes=20971520 estimated_effective_bw_gbs=0.01
+==PROF== Disconnected from process 590429
+==PROF== Report: /home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/profiles/fusion_bias_relu_unfused_85274.ncu-rep
+=== Profiling bias_relu_fused ===
+==PROF== Connected to process 590621 (/home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/build_profile_85274/profile_fusion_kernels)
+==PROF== Profiling "bias_relu_kernel_vec4" - 0: 0%....50%....100% - 35 passes
+check bias_relu max_abs=0.000e+00 PASS
+PROFILE_CASE bias_relu_fused rows=2048 cols=512
+PROFILE_TIMING case=bias_relu_fused runtime_us=3170368.500 estimated_read_bytes=8388608 estimated_write_bytes=8388608 estimated_total_bytes=16777216 estimated_effective_bw_gbs=0.01
+==PROF== Disconnected from process 590621
+==PROF== Report: /home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/profiles/fusion_bias_relu_fused_85274.ncu-rep
+=== Profiling residual_ln_unfused ===
+==PROF== Connected to process 590806 (/home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/build_profile_85274/profile_fusion_kernels)
+==PROF== Profiling "residual_add_kernel_vec4" - 0: 0%....50%....100% - 35 passes
+==PROF== Profiling "layernorm_save_kernel" - 1: 0%....50%....100% - 36 passes
+check residual_ln res_abs=0.000e+00 out_abs=0.000e+00 PASS
+PROFILE_CASE residual_ln_unfused rows=2048 cols=128
+PROFILE_TIMING case=residual_ln_unfused runtime_us=3610962.000 estimated_read_bytes=7340032 estimated_write_bytes=2097152 estimated_total_bytes=9437184 estimated_effective_bw_gbs=0.00
+==PROF== Disconnected from process 590806
+==PROF== Report: /home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/profiles/fusion_residual_ln_unfused_85274.ncu-rep
+=== Profiling residual_ln_fused ===
+==PROF== Connected to process 590994 (/home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/build_profile_85274/profile_fusion_kernels)
+==PROF== Profiling "residual_layernorm_save_kernel" - 0: 0%....50%....100% - 36 passes
+check residual_ln res_abs=0.000e+00 out_abs=0.000e+00 PASS
+PROFILE_CASE residual_ln_fused rows=2048 cols=128
+PROFILE_TIMING case=residual_ln_fused runtime_us=2255957.500 estimated_read_bytes=6291456 estimated_write_bytes=2097152 estimated_total_bytes=8388608 estimated_effective_bw_gbs=0.00
+==PROF== Disconnected from process 590994
+==PROF== Report: /home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/profiles/fusion_residual_ln_fused_85274.ncu-rep
+=== Profiling ln_bwd_residual_unfused ===
+==PROF== Connected to process 591143 (/home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/build_profile_85274/profile_fusion_kernels)
+==PROF== Profiling "layernorm_backward_dx_kernel" - 0: 0%....50%....100% - 36 passes
+==PROF== Profiling "layernorm_backward_dweight_ke..." - 1: 0%....50%....100% - 36 passes
+==PROF== Profiling "residual_add_kernel_vec4" - 2: 0%....50%....100% - 35 passes
+check ln_bwd_residual res_abs=5.960e-08 dgamma_abs=0.000e+00 dbeta_abs=0.000e+00 PASS
+PROFILE_CASE ln_bwd_residual_unfused rows=2048 cols=128
+PROFILE_TIMING case=ln_bwd_residual_unfused runtime_us=4229944.500 estimated_read_bytes=8388608 estimated_write_bytes=4194304 estimated_total_bytes=12582912 estimated_effective_bw_gbs=0.00
+==PROF== Disconnected from process 591143
+==PROF== Report: /home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/profiles/fusion_ln_bwd_residual_unfused_85274.ncu-rep
+=== Profiling ln_bwd_residual_fused ===
+==PROF== Connected to process 591357 (/home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/build_profile_85274/profile_fusion_kernels)
+==PROF== Profiling "layernorm_backward_dx_kernel" - 0: 0%....50%....100% - 36 passes
+==PROF== Profiling "layernorm_backward_dweight_ke..." - 1: 0%....50%....100% - 36 passes
+check ln_bwd_residual res_abs=5.960e-08 dgamma_abs=0.000e+00 dbeta_abs=0.000e+00 PASS
+PROFILE_CASE ln_bwd_residual_fused rows=2048 cols=128
+PROFILE_TIMING case=ln_bwd_residual_fused runtime_us=2719201.250 estimated_read_bytes=7340032 estimated_write_bytes=3145728 estimated_total_bytes=10485760 estimated_effective_bw_gbs=0.00
+==PROF== Disconnected from process 591357
+==PROF== Report: /home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/profiles/fusion_ln_bwd_residual_fused_85274.ncu-rep
+Wrote results/fusion_profile_85274.csv with 11 profiled kernel rows.
+=== Fusion Profile Summary ===
+case,launch_id,kernel_name,runtime_us,dram_read_bytes,dram_write_bytes,dram_throughput_pct,sm_throughput_pct,achieved_occupancy_pct,observed_bottleneck,counter_source
+bias_relu_fused,0,"bias_relu_kernel_vec4(const float4 *, const float4 *, float4 *, int, int)",14.624,4551488.0,1090688.0,81.41,8.38,81.47,memory-bound,ncu
+bias_relu_unfused,0,"bias_add_kernel(float *, const float *, int, int)",16.96,4698336.0,1212192.0,65.12,20.66,78.83,memory-bound,ncu
+bias_relu_unfused,1,"relu_forward_kernel(const float *, float *, int)",15.936,4616384.0,1205024.0,72.74,14.96,76.8,memory-bound,ncu
+ln_bwd_residual_fused,0,"void <unnamed>::layernorm_backward_dx_kernel<(bool)1>(const float *, const float *, const float *, const float *, const float *, float *, int)",11.68,3765728.0,0.0,53.76,54.21,86.19,mixed,ncu
+ln_bwd_residual_fused,1,"<unnamed>::layernorm_backward_dweight_kernel(const float *, const float *, const float *, const float *, float *, float *, int, int)",17.312,3579936.0,0.0,33.26,6.74,42.72,memory-bound,ncu
+ln_bwd_residual_unfused,0,"void <unnamed>::layernorm_backward_dx_kernel<(bool)0>(const float *, const float *, const float *, const float *, const float *, float *, int)",10.4,2579232.0,0.0,40.01,57.33,85.83,compute-bound,ncu
+ln_bwd_residual_unfused,1,"<unnamed>::layernorm_backward_dweight_kernel(const float *, const float *, const float *, const float *, float *, float *, int, int)",17.184,3604192.0,0.0,33.82,6.81,43.01,memory-bound,ncu
+ln_bwd_residual_unfused,2,"residual_add_kernel_vec4(const float4 *, const float4 *, float4 *, int)",6.432,2368704.0,0.0,61.52,2.57,64.84,memory-bound,ncu
+residual_ln_fused,0,"residual_layernorm_save_kernel(const float *, const float *, const float *, const float *, float *, float *, float *, float *, int, float)",11.040000000000001,2522048.0,0.0,38.58,58.21,85.71,compute-bound,ncu
+residual_ln_unfused,0,"residual_add_kernel_vec4(const float4 *, const float4 *, float4 *, int)",6.048,2375232.0,0.0,64.01,2.67,65.88,memory-bound,ncu
+residual_ln_unfused,1,"layernorm_save_kernel(const float *, const float *, const float *, float *, float *, float *, int, float)",10.752,1241184.0,0.0,19.5,56.18,85.69,compute-bound,ncu
+=== DONE ===

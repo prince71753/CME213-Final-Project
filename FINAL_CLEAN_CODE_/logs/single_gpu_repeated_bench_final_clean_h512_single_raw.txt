@@ -1,0 +1,291 @@
+=== Environment ===
+hpcc-gpu-5-3
+0, Quadro RTX 6000, 23040 MiB
+1, Quadro RTX 6000, 23040 MiB
+2, Quadro RTX 6000, 23040 MiB
+3, Quadro RTX 6000, 23040 MiB
+=== GPU state: start ===
+index, name, temperature.gpu, clocks.current.sm [MHz], clocks.current.memory [MHz], power.draw [W], utilization.gpu [%], memory.used [MiB]
+0, Quadro RTX 6000, 27, 300 MHz, 405 MHz, 16.76 W, 0 %, 0 MiB
+1, Quadro RTX 6000, 31, 300 MHz, 405 MHz, 16.46 W, 0 %, 0 MiB
+2, Quadro RTX 6000, 28, 300 MHz, 405 MHz, 16.40 W, 0 %, 0 MiB
+3, Quadro RTX 6000, 26, 300 MHz, 405 MHz, 4.22 W, 0 %, 0 MiB
+hidden=512
+backends=cublas_tc cublas_tc_ffn_fp16 cublas_tc_fp16_storage custom
+repeats=5
+cooldown_sec=5
+steps=50
+lr=1e-4
+build_dir=build_bench_h512_final_clean_h512_single
+=== Build hidden=512 ===
+mkdir -p build_bench_h512_final_clean_h512_single
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -c src/kernels/gemm.cu -o build_bench_h512_final_clean_h512_single/kernels/gemm.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -c src/kernels/attention.cu -o build_bench_h512_final_clean_h512_single/kernels/attention.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -c src/kernels/layernorm.cu -o build_bench_h512_final_clean_h512_single/kernels/layernorm.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -c src/kernels/activations.cu -o build_bench_h512_final_clean_h512_single/kernels/activations.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -c src/kernels/embedding.cu -o build_bench_h512_final_clean_h512_single/kernels/embedding.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -c src/model/transformer.cu -o build_bench_h512_final_clean_h512_single/model/transformer.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -c src/main.cu -o build_bench_h512_final_clean_h512_single/main.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -x cu -c src/data/dataset.cpp -o build_bench_h512_final_clean_h512_single/data/dataset.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -x cu -c src/model/distributed.cpp -o build_bench_h512_final_clean_h512_single/model/distributed.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include  -DHIDDEN_DIM=512 -DFF_DIM=2048 -DHEAD_DIM=128 -o build_bench_h512_final_clean_h512_single/train build_bench_h512_final_clean_h512_single/kernels/gemm.o build_bench_h512_final_clean_h512_single/kernels/attention.o build_bench_h512_final_clean_h512_single/kernels/layernorm.o build_bench_h512_final_clean_h512_single/kernels/activations.o build_bench_h512_final_clean_h512_single/kernels/embedding.o build_bench_h512_final_clean_h512_single/model/transformer.o build_bench_h512_final_clean_h512_single/main.o build_bench_h512_final_clean_h512_single/data/dataset.o build_bench_h512_final_clean_h512_single/model/distributed.o -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -Xlinker -rpath=/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -lcublas -lcublasLt 
+=== hidden=512 backend=cublas_tc repeat=1 steps=50 lr=1e-4 ===
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=1 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Batches: total=536 local_per_rank=536 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2163
+Epoch 1: avg_logged_loss=3.2163  steps/rank=50  291ms  352209 tok/s
+=== hidden=512 backend=cublas_tc_ffn_fp16 repeat=1 steps=50 lr=1e-4 ===
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_FFN_FP16=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=1 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Batches: total=536 local_per_rank=536 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2068
+Epoch 1: avg_logged_loss=3.2068  steps/rank=50  177ms  578078 tok/s
+=== hidden=512 backend=cublas_tc_fp16_storage repeat=1 steps=50 lr=1e-4 ===
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_FP16_STORAGE_ONLY=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=1 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Batches: total=536 local_per_rank=536 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2161
+Epoch 1: avg_logged_loss=3.2161  steps/rank=50  146ms  701154 tok/s
+=== hidden=512 backend=custom repeat=1 steps=50 lr=1e-4 ===
+CME213 environment:
+  CME213_GEMM_BACKEND=custom
+  GEMM requested=custom auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=1 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Batches: total=536 local_per_rank=536 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1680
+Epoch 1: avg_logged_loss=3.1680  steps/rank=50  363ms  281954 tok/s
+=== hidden=512 backend=cublas_tc repeat=2 steps=50 lr=1e-4 ===
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=1 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Batches: total=536 local_per_rank=536 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2161
+Epoch 1: avg_logged_loss=3.2161  steps/rank=50  138ms  739497 tok/s
+=== hidden=512 backend=cublas_tc_ffn_fp16 repeat=2 steps=50 lr=1e-4 ===
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_FFN_FP16=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=1 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Batches: total=536 local_per_rank=536 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss nan
+Epoch 1: avg_logged_loss=nan  steps/rank=50  135ms  759977 tok/s
+=== hidden=512 backend=cublas_tc_fp16_storage repeat=2 steps=50 lr=1e-4 ===
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_FP16_STORAGE_ONLY=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=1 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Batches: total=536 local_per_rank=536 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2159
+Epoch 1: avg_logged_loss=3.2159  steps/rank=50  144ms  710472 tok/s
+=== hidden=512 backend=custom repeat=2 steps=50 lr=1e-4 ===
+CME213 environment:
+  CME213_GEMM_BACKEND=custom
+  GEMM requested=custom auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=1 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Batches: total=536 local_per_rank=536 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1731
+Epoch 1: avg_logged_loss=3.1731  steps/rank=50  363ms  281902 tok/s
+=== hidden=512 backend=cublas_tc repeat=3 steps=50 lr=1e-4 ===
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=1 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Batches: total=536 local_per_rank=536 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2165
+Epoch 1: avg_logged_loss=3.2165  steps/rank=50  141ms  727849 tok/s
+=== hidden=512 backend=cublas_tc_ffn_fp16 repeat=3 steps=50 lr=1e-4 ===
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_FFN_FP16=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=1 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Batches: total=536 local_per_rank=536 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2030
+Epoch 1: avg_logged_loss=3.2030  steps/rank=50  135ms  761259 tok/s
+=== hidden=512 backend=cublas_tc_fp16_storage repeat=3 steps=50 lr=1e-4 ===
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_FP16_STORAGE_ONLY=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=1 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Batches: total=536 local_per_rank=536 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2159
+Epoch 1: avg_logged_loss=3.2159  steps/rank=50  144ms  709242 tok/s
+=== hidden=512 backend=custom repeat=3 steps=50 lr=1e-4 ===
+CME213 environment:
+  CME213_GEMM_BACKEND=custom
+  GEMM requested=custom auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=1 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Batches: total=536 local_per_rank=536 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1761
+Epoch 1: avg_logged_loss=3.1761  steps/rank=50  363ms  282105 tok/s
+=== hidden=512 backend=cublas_tc repeat=4 steps=50 lr=1e-4 ===
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=1 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Batches: total=536 local_per_rank=536 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2164
+Epoch 1: avg_logged_loss=3.2164  steps/rank=50  139ms  734098 tok/s
+=== hidden=512 backend=cublas_tc_ffn_fp16 repeat=4 steps=50 lr=1e-4 ===
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_FFN_FP16=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=1 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Batches: total=536 local_per_rank=536 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2053
+Epoch 1: avg_logged_loss=3.2053  steps/rank=50  135ms  759988 tok/s
+=== hidden=512 backend=cublas_tc_fp16_storage repeat=4 steps=50 lr=1e-4 ===
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_FP16_STORAGE_ONLY=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=1 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Batches: total=536 local_per_rank=536 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2160
+Epoch 1: avg_logged_loss=3.2160  steps/rank=50  144ms  712271 tok/s
+=== hidden=512 backend=custom repeat=4 steps=50 lr=1e-4 ===
+CME213 environment:
+  CME213_GEMM_BACKEND=custom
+  GEMM requested=custom auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=1 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Batches: total=536 local_per_rank=536 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1706
+Epoch 1: avg_logged_loss=3.1706  steps/rank=50  361ms  283433 tok/s
+=== hidden=512 backend=cublas_tc repeat=5 steps=50 lr=1e-4 ===
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=1 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Batches: total=536 local_per_rank=536 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2166
+Epoch 1: avg_logged_loss=3.2166  steps/rank=50  141ms  727603 tok/s
+=== hidden=512 backend=cublas_tc_ffn_fp16 repeat=5 steps=50 lr=1e-4 ===
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_FFN_FP16=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=1 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Batches: total=536 local_per_rank=536 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2058
+Epoch 1: avg_logged_loss=3.2058  steps/rank=50  134ms  762109 tok/s
+=== hidden=512 backend=cublas_tc_fp16_storage repeat=5 steps=50 lr=1e-4 ===
+CME213 environment:
+  CME213_GEMM_BACKEND=cublas_tc
+  CME213_FP16_STORAGE_ONLY=1
+  GEMM requested=cublas_tc auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=1 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Batches: total=536 local_per_rank=536 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.2166
+Epoch 1: avg_logged_loss=3.2166  steps/rank=50  145ms  707718 tok/s
+=== hidden=512 backend=custom repeat=5 steps=50 lr=1e-4 ===
+CME213 environment:
+  CME213_GEMM_BACKEND=custom
+  GEMM requested=custom auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=512 heads=4 ff=2048 batch=32
+Parameters: 3249664 (12694.00 KB)
+Training: epochs=1 lr=1.00e-04 max_steps=50 world_size=1 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Batches: total=536 local_per_rank=536 used_per_epoch=50 dropped=0
+  epoch 1 | step   50/50 | loss 3.1780
+Epoch 1: avg_logged_loss=3.1780  steps/rank=50  362ms  282770 tok/s
+=== GPU state: end ===
+index, name, temperature.gpu, clocks.current.sm [MHz], clocks.current.memory [MHz], power.draw [W], utilization.gpu [%], memory.used [MiB]
+0, Quadro RTX 6000, 35, 300 MHz, 810 MHz, 23.15 W, 0 %, 0 MiB
+1, Quadro RTX 6000, 31, 300 MHz, 405 MHz, 16.57 W, 0 %, 0 MiB
+2, Quadro RTX 6000, 27, 300 MHz, 405 MHz, 16.38 W, 0 %, 0 MiB
+3, Quadro RTX 6000, 26, 300 MHz, 405 MHz, 4.34 W, 0 %, 0 MiB
+=== Summarize ===
+Wrote results/single_gpu_repeated_bench_final_clean_h512_single.csv
+Wrote results/single_gpu_repeated_bench_summary_final_clean_h512_single.csv
+=== DONE job=final_clean_h512_single status=0 ===

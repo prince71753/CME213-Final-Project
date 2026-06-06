@@ -1,0 +1,74 @@
+=== Environment ===
+hpcc-gpu-5-1
+0, Quadro RTX 6000, 23040 MiB
+1, Quadro RTX 6000, 23040 MiB
+2, Quadro RTX 6000, 23040 MiB
+3, Quadro RTX 6000, 23040 MiB
+Build cuda_12.3.r12.3/compiler.33492891_0
+NVIDIA (R) Nsight Compute Command Line Profiler
+tmpdir=/home/cme213/jadbitar/tmp
+=== Build ===
+mkdir -p build_hotspots_85273
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -c src/kernels/gemm.cu -o build_hotspots_85273/kernels/gemm.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -c src/kernels/attention.cu -o build_hotspots_85273/kernels/attention.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -c src/kernels/layernorm.cu -o build_hotspots_85273/kernels/layernorm.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -c src/kernels/activations.cu -o build_hotspots_85273/kernels/activations.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -c src/kernels/embedding.cu -o build_hotspots_85273/kernels/embedding.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -o build_hotspots_85273/profile_training_hotspots tests/profile_training_hotspots.cu build_hotspots_85273/kernels/gemm.o build_hotspots_85273/kernels/attention.o build_hotspots_85273/kernels/layernorm.o build_hotspots_85273/kernels/activations.o build_hotspots_85273/kernels/embedding.o -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -Xlinker -rpath=/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -lcublas -lcublasLt 
+=== Profiling splitk_dW1 ===
+==PROF== Connected to process 590125 (/home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/build_hotspots_85273/profile_training_hotspots)
+==PROF== Profiling "volta_s884gemm_128x128_ldg8_f..." - 0: 0%....50%....100% - 36 passes
+HOTSPOT_TIMING case=splitk_dW1 m=256 n=1024 k=2048 batch=1 runtime_us=57.549 flops=1073741824 gflops=18657.937
+==PROF== Disconnected from process 590125
+==PROF== Report: /home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/profiles/hotspot_splitk_dW1_85273.ncu-rep
+=== Profiling splitk_dW2 ===
+==PROF== Connected to process 590237 (/home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/build_hotspots_85273/profile_training_hotspots)
+==PROF== Profiling "volta_s884gemm_128x128_ldg8_f..." - 0: 0%....50%....100% - 35 passes
+HOTSPOT_TIMING case=splitk_dW2 m=1024 n=256 k=2048 batch=1 runtime_us=63.978 flops=1073741824 gflops=16783.090
+==PROF== Disconnected from process 590237
+==PROF== Report: /home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/profiles/hotspot_splitk_dW2_85273.ncu-rep
+=== Profiling splitk_qkv ===
+==PROF== Connected to process 590337 (/home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/build_hotspots_85273/profile_training_hotspots)
+==PROF== Profiling "volta_s884gemm_128x128_ldg8_f..." - 0: 0%....50%....100% - 35 passes
+==PROF== Profiling "splitKreduce_kernel" - 1: 0%....50%....100% - 35 passes
+HOTSPOT_TIMING case=splitk_qkv m=256 n=256 k=2048 batch=1 runtime_us=48.333 flops=268435456 gflops=5553.898
+==PROF== Disconnected from process 590337
+==PROF== Report: /home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/profiles/hotspot_splitk_qkv_85273.ncu-rep
+=== Profiling splitk_dWout ===
+==PROF== Connected to process 590505 (/home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/build_hotspots_85273/profile_training_hotspots)
+==PROF== Profiling "volta_sgemm_32x128_nt" - 0: 0%....50%....100% - 35 passes
+==PROF== Profiling "splitKreduce_kernel" - 1: 0%....50%....100% - 35 passes
+HOTSPOT_TIMING case=splitk_dWout m=256 n=65 k=2048 batch=1 runtime_us=50.744 flops=68157440 gflops=1343.163
+==PROF== Disconnected from process 590505
+==PROF== Report: /home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/profiles/hotspot_splitk_dWout_85273.ncu-rep
+=== Profiling bt_ff1 ===
+==PROF== Connected to process 590737 (/home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/build_hotspots_85273/profile_training_hotspots)
+==PROF== Profiling "volta_s884gemm_128x128_ldg8_f..." - 0: 0%....50%....100% - 35 passes
+HOTSPOT_TIMING case=bt_ff1 m=2048 n=256 k=1024 batch=1 runtime_us=60.294 flops=1073741824 gflops=17808.317
+==PROF== Disconnected from process 590737
+==PROF== Report: /home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/profiles/hotspot_bt_ff1_85273.ncu-rep
+=== Profiling fwd_ff1 ===
+==PROF== Connected to process 590883 (/home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/build_hotspots_85273/profile_training_hotspots)
+==PROF== Profiling "volta_s884gemm_128x128_ldg8_f..." - 0: 0%....50%....100% - 35 passes
+HOTSPOT_TIMING case=fwd_ff1 m=2048 n=1024 k=256 batch=1 runtime_us=63.283 flops=1073741824 gflops=16967.249
+==PROF== Disconnected from process 590883
+==PROF== Report: /home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/profiles/hotspot_fwd_ff1_85273.ncu-rep
+=== Profiling batched_qkv ===
+==PROF== Connected to process 591073 (/home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/build_hotspots_85273/profile_training_hotspots)
+==PROF== Profiling "volta_s884gemm_128x128_ldg8_f..." - 0: 0%....50%....100% - 36 passes
+HOTSPOT_TIMING case=batched_qkv m=2048 n=256 k=256 batch=3 runtime_us=50.483 flops=805306368 gflops=15951.967
+==PROF== Disconnected from process 591073
+==PROF== Report: /home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/profiles/hotspot_batched_qkv_85273.ncu-rep
+Wrote results/hotspot_profile_85273.csv with 9 hotspot rows.
+=== Hotspot Profile Summary ===
+case,kernel_name,m,n,k,batch,flops,event_runtime_us,event_gflops,ncu_runtime_us,ncu_gflops,dram_read_bytes,dram_write_bytes,dram_total_bytes,arithmetic_intensity,measured_bw_gbs,dram_throughput_pct,sm_throughput_pct,achieved_occupancy_pct
+batched_qkv,volta_s884gemm_128x128_ldg8_f2f_nn,2048,256,256,3,805306368.0,50.483,15951.967,53.248000000000005,15123.692307692305,4755296.0,3697088.0,8452384.0,95.27564862173796,158.7361778846154,27.3,32.93,12.48
+bt_ff1,volta_s884gemm_128x128_ldg8_f2f_tn,2048,256,1024,1,1073741824.0,60.294,17808.317,71.84,14946.294877505568,13905984.0,42880.0,13948864.0,76.97700859367473,194.16570155902005,32.32,31.07,12.5
+fwd_ff1,volta_s884gemm_128x128_ldg8_f2f_nn,2048,1024,256,1,1073741824.0,63.283,16967.249,56.288000000000004,19075.85673678226,4506112.0,5404288.0,9910400.0,108.34495318049726,176.06594656054577,30.23,41.75,12.48
+splitk_dW1,volta_s884gemm_128x128_ldg8_f2f_nt,256,1024,2048,1,1073741824.0,57.549,18657.937,67.936,15805.196420160151,13845600.0,40032.0,13885632.0,77.3275443278347,204.39284032030142,33.35,33.72,15.67
+splitk_dW2,volta_s884gemm_128x128_ldg8_f2f_nt,1024,256,2048,1,1073741824.0,63.978,16783.09,66.08,16249.119612590799,13857952.0,40736.0,13898688.0,77.25490521119691,210.3312348668281,34.05,34.67,15.65
+splitk_dWout,volta_sgemm_32x128_nt,256,65,2048,1,68157440.0,50.744,1343.163,21.824,3123.049853372434,3757824.0,0.0,3757824.0,18.13747530485728,172.18768328445748,28.44,37.82,24.97
+splitk_dWout,"void cublasLt::splitKreduce_kernel<(int)32, (int)16, int, float, float, float, float, (bool)1, (bool)0, (bool)0>(cublasLt::cublasSplitKParams<T6>, const T4 *, const T5 *, T5 *, const T6 *, const T6 *, const T7 *, const T4 *, T7 *, void *, long, T6 *, int *)",256,65,2048,1,68157440.0,50.744,1343.163,4.768,14294.76510067114,980480.0,0.0,980480.0,69.51436031331593,205.63758389261747,32.35,5.18,47.32
+splitk_qkv,volta_s884gemm_128x128_ldg8_f2f_nt,256,256,2048,1,268435456.0,48.333,5553.898,20.992,12787.512195121952,4876448.0,346272.0,5222720.0,51.39763494883892,248.79573170731706,41.56,27.08,12.48
+splitk_qkv,"void cublasLt::splitKreduce_kernel<(int)32, (int)16, int, float, float, float, float, (bool)1, (bool)0, (bool)0>(cublasLt::cublasSplitKParams<T6>, const T4 *, const T5 *, T5 *, const T6 *, const T6 *, const T7 *, const T4 *, T7 *, void *, long, T6 *, int *)",256,256,2048,1,268435456.0,48.333,5553.898,9.504,28244.47138047138,4270976.0,0.0,4270976.0,62.851080408787126,449.3872053872054,72.82,8.04,86.12
+=== DONE ===

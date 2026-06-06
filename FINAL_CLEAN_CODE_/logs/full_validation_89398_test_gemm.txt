@@ -1,0 +1,31 @@
+=== GEMM Correctness & Performance Test ===
+
+GEMM requested backend: auto
+GEMM auto policy: auto:cublas_tc_current_clean_benchmark
+CME213_STRICT_FP32: 0
+gemm_tiled tolerance: 5.0e-03
+
+M=64, N=64, K=64
+  naive  max error: 4.768372e-07  PASS
+  gemm_tiled(dispatch) max error: 7.152557e-07  PASS
+  naive:  0.004 ms (126.2 GFLOP/s)
+  tiled:  0.006 ms (93.2 GFLOP/s)  speedup: 0.74x
+
+M=128, N=128, K=128
+  naive  max error: 7.152557e-07  PASS
+  gemm_tiled(dispatch) max error: 1.430511e-06  PASS
+  naive:  0.007 ms (560.3 GFLOP/s)
+  tiled:  0.007 ms (611.3 GFLOP/s)  speedup: 1.09x
+
+M=256, N=256, K=256
+  naive  max error: 1.668930e-06  PASS
+  gemm_tiled(dispatch) max error: 3.576279e-06  PASS
+  naive:  0.039 ms (856.4 GFLOP/s)
+  tiled:  0.011 ms (3181.4 GFLOP/s)  speedup: 3.71x
+
+M=512, N=512, K=512
+  naive  max error: 3.337860e-06  PASS
+  gemm_tiled(dispatch) max error: 2.421081e-03  PASS
+  naive:  0.270 ms (994.9 GFLOP/s)
+  tiled:  0.026 ms (10176.6 GFLOP/s)  speedup: 10.23x
+

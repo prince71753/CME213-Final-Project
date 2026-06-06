@@ -1,0 +1,7 @@
+==PROF== Connected to process 590621 (/home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/build_profile_85274/profile_fusion_kernels)
+==PROF== Profiling "bias_relu_kernel_vec4" - 0: 0%....50%....100% - 35 passes
+check bias_relu max_abs=0.000e+00 PASS
+PROFILE_CASE bias_relu_fused rows=2048 cols=512
+PROFILE_TIMING case=bias_relu_fused runtime_us=3170368.500 estimated_read_bytes=8388608 estimated_write_bytes=8388608 estimated_total_bytes=16777216 estimated_effective_bw_gbs=0.01
+==PROF== Disconnected from process 590621
+==PROF== Report: /home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/profiles/fusion_bias_relu_fused_85274.ncu-rep

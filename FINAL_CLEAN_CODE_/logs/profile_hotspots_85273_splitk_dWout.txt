@@ -1,0 +1,6 @@
+==PROF== Connected to process 590505 (/home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/build_hotspots_85273/profile_training_hotspots)
+==PROF== Profiling "volta_sgemm_32x128_nt" - 0: 0%....50%....100% - 35 passes
+==PROF== Profiling "splitKreduce_kernel" - 1: 0%....50%....100% - 35 passes
+HOTSPOT_TIMING case=splitk_dWout m=256 n=65 k=2048 batch=1 runtime_us=50.744 flops=68157440 gflops=1343.163
+==PROF== Disconnected from process 590505
+==PROF== Report: /home/cme213/jadbitar/cme213/final_project/FINAL_CLEAN_CODE/profiles/hotspot_splitk_dWout_85273.ncu-rep

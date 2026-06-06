@@ -1,0 +1,244 @@
+=== Environment ===
+hpcc-gpu-5-1
+0, Quadro RTX 6000, 23040 MiB
+1, Quadro RTX 6000, 23040 MiB
+2, Quadro RTX 6000, 23040 MiB
+3, Quadro RTX 6000, 23040 MiB
+Build cuda_12.3.r12.3/compiler.33492891_0
+/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/bin/.bin/mpicxx: Open MPI 4.1.7a1 (Language: C++)
+=== Clean Build ===
+rm -rf build build_mpi
+mkdir -p build
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -c src/kernels/gemm.cu -o build/kernels/gemm.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -c src/kernels/attention.cu -o build/kernels/attention.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -c src/kernels/layernorm.cu -o build/kernels/layernorm.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -c src/kernels/activations.cu -o build/kernels/activations.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -c src/kernels/embedding.cu -o build/kernels/embedding.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -c src/model/transformer.cu -o build/model/transformer.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -c src/main.cu -o build/main.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -x cu -c src/data/dataset.cpp -o build/data/dataset.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -x cu -c src/model/distributed.cpp -o build/model/distributed.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -o build/train build/kernels/gemm.o build/kernels/attention.o build/kernels/layernorm.o build/kernels/activations.o build/kernels/embedding.o build/model/transformer.o build/main.o build/data/dataset.o build/model/distributed.o -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -Xlinker -rpath=/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -lcublas -lcublasLt 
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -o build/test_gemm tests/test_gemm.cu build/kernels/gemm.o build/kernels/attention.o build/kernels/layernorm.o build/kernels/activations.o build/kernels/embedding.o -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -Xlinker -rpath=/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -lcublas -lcublasLt 
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -o build/test_attention tests/test_attention.cu build/kernels/gemm.o build/kernels/attention.o build/kernels/layernorm.o build/kernels/activations.o build/kernels/embedding.o -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -Xlinker -rpath=/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -lcublas -lcublasLt 
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -o build/test_layernorm tests/test_layernorm.cu build/kernels/gemm.o build/kernels/attention.o build/kernels/layernorm.o build/kernels/activations.o build/kernels/embedding.o -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -Xlinker -rpath=/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -lcublas -lcublasLt 
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -o build/test_model_reference tests/test_model_reference.cu build/kernels/gemm.o build/kernels/attention.o build/kernels/layernorm.o build/kernels/activations.o build/kernels/embedding.o build/model/transformer.o build/model/distributed.o -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -Xlinker -rpath=/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -lcublas -lcublasLt 
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -o build/test_fusion_benchmark tests/test_fusion_benchmark.cu build/kernels/gemm.o build/kernels/attention.o build/kernels/layernorm.o build/kernels/activations.o build/kernels/embedding.o -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -Xlinker -rpath=/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -lcublas -lcublasLt 
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -o build/benchmark_all tests/benchmark_all.cu build/kernels/gemm.o build/kernels/attention.o build/kernels/layernorm.o build/kernels/activations.o build/kernels/embedding.o -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -Xlinker -rpath=/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -lcublas -lcublasLt 
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -o build/profile_fusion_kernels tests/profile_fusion_kernels.cu build/kernels/gemm.o build/kernels/attention.o build/kernels/layernorm.o build/kernels/activations.o build/kernels/embedding.o -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -Xlinker -rpath=/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -lcublas -lcublasLt 
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -o build/profile_training_hotspots tests/profile_training_hotspots.cu build/kernels/gemm.o build/kernels/attention.o build/kernels/layernorm.o build/kernels/activations.o build/kernels/embedding.o -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -Xlinker -rpath=/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -lcublas -lcublasLt 
+mkdir -p build_mpi
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/kernels/gemm.cu -o build_mpi/kernels/gemm.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/kernels/attention.cu -o build_mpi/kernels/attention.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/kernels/layernorm.cu -o build_mpi/kernels/layernorm.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/kernels/activations.cu -o build_mpi/kernels/activations.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/kernels/embedding.cu -o build_mpi/kernels/embedding.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/model/transformer.cu -o build_mpi/model/transformer.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -c src/main.cu -o build_mpi/main.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -x cu -c src/data/dataset.cpp -o build_mpi/data/dataset.o
+nvcc -arch=sm_75 -std=c++17 -O2 -Iinclude --default-stream per-thread -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/include   -DUSE_MPI -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/hwloc/hwloc201/hwloc/include -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/include/openmpi/opal/mca/event/libevent2022/libevent/include -Xcompiler -pthread -Xcompiler -fopenmp -DUSE_NCCL -I/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/include -x cu -c src/model/distributed.cpp -o build_mpi/model/distributed.o
+mpicxx -o build_mpi/train_mpi build_mpi/kernels/gemm.o build_mpi/kernels/attention.o build_mpi/kernels/layernorm.o build_mpi/kernels/activations.o build_mpi/kernels/embedding.o build_mpi/model/transformer.o build_mpi/main.o build_mpi/data/dataset.o build_mpi/model/distributed.o -pthread -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/lib -Wl,-rpath -Wl,/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/hpcx/hpcx-2.17.1/ompi/lib -Wl,--enable-new-dtags -lmpi -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/REDIST/cuda/12.3/targets/x86_64-linux/lib -lcudart \
+    -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -Wl,-rpath,/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/math_libs/12.3/targets/x86_64-linux/lib -lcublas -lcublasLt \
+    -L/home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/lib -Xlinker -rpath -Xlinker /home/cme213/software/nvidia-hpc-sdk/2024_24.1/Linux_x86_64/24.1/comm_libs/12.3/nccl/lib -lnccl  -fopenmp
+=== test_gemm ===
+=== GEMM Correctness & Performance Test ===
+
+M=64, N=64, K=64
+  naive  max error: 4.768372e-07  PASS
+  tiled  max error: 7.152557e-07  PASS
+  naive:  0.003 ms (160.0 GFLOP/s)
+  tiled:  0.005 ms (98.6 GFLOP/s)  speedup: 0.62x
+
+M=128, N=128, K=128
+  naive  max error: 7.152557e-07  PASS
+  tiled  max error: 1.430511e-06  PASS
+  naive:  0.006 ms (720.4 GFLOP/s)
+  tiled:  0.006 ms (747.1 GFLOP/s)  speedup: 1.04x
+
+M=256, N=256, K=256
+  naive  max error: 1.668930e-06  PASS
+  tiled  max error: 3.576279e-06  PASS
+  naive:  0.030 ms (1132.2 GFLOP/s)
+  tiled:  0.008 ms (4201.0 GFLOP/s)  speedup: 3.71x
+
+M=512, N=512, K=512
+  naive  max error: 3.337860e-06  PASS
+  tiled  max error: 2.421081e-03  PASS
+  naive:  0.200 ms (1342.9 GFLOP/s)
+  tiled:  0.022 ms (12097.8 GFLOP/s)  speedup: 9.01x
+
+=== test_attention ===
+=== Attention Correctness & Performance Test ===
+
+BH=4, seq=64, head_dim=32
+  naive  max error: 4.470348e-08  PASS
+  tiled  max error: 7.450581e-08  PASS
+  naive:  0.0406 ms
+  tiled:  0.1259 ms  speedup: 0.32x
+=== test_layernorm ===
+=== LayerNorm Correctness & Performance Test ===
+
+rows=2048, cols=128
+  max error: 7.152557e-07  PASS
+  time: 0.0070 ms  effective bandwidth: 301.2 GB/s
+=== test_model_reference ===
+=== End-to-End Model Reference Test ===
+
+  forward loss cpu=1.94580143 gpu=1.94580150 abs_err=6.333e-08 PASS
+  logits max_abs_err=1.491e-09 PASS
+  grad idx    3 numeric= 3.744948e-03 analytic= 3.744948e-03 abs=2.795e-10 rel=3.732e-08
+  grad idx   63 numeric= 0.000000e+00 analytic= 0.000000e+00 abs=0.000e+00 rel=0.000e+00
+  grad idx  203 numeric= 0.000000e+00 analytic= 0.000000e+00 abs=0.000e+00 rel=0.000e+00
+  grad idx  357 numeric=-3.103568e-06 analytic=-3.103559e-06 abs=8.465e-12 rel=1.364e-06
+  grad idx  425 numeric= 4.440892e-13 analytic= 6.084749e-13 abs=1.644e-13 rel=8.009e-02
+  grad idx  557 numeric=-6.094397e-07 analytic=-6.094390e-07 abs=7.363e-13 rel=6.041e-07
+  grad idx  633 numeric=-1.354092e-03 analytic=-1.354089e-03 abs=3.335e-09 rel=1.231e-06
+  grad idx  682 numeric=-3.748085e-03 analytic=-3.748085e-03 abs=2.918e-10 rel=3.892e-08
+  gradient finite-difference max_abs=3.335e-09 max_rel=8.009e-02 PASS
+  adam first-step clip_scale=1.000000 max_update_err=1.812e-09 PASS
+
+=== MODEL REFERENCE TEST PASSED ===
+=== test_fusion_benchmark ===
+=== Fusion Correctness & Performance Test ===
+
+  bias+ReLU rows=2048 cols=512 err=0.000e+00 PASS
+    unfused 0.0225 ms | fused 0.0157 ms | speedup 1.43x
+  residual+LayerNorm fwd rows=2048 cols=128 res_err=0.000e+00 out_err=0.000e+00 PASS
+    unfused 0.0096 ms | fused 0.0073 ms | speedup 1.32x
+  LayerNorm bwd+residual rows=2048 cols=128 res_err=5.960e-08 dgamma_err=0.000e+00 dbeta_err=0.000e+00 PASS
+    unfused 0.0216 ms | fused 0.0194 ms | speedup 1.11x
+
+=== FUSION TEST PASSED ===
+=== single_gpu_train_20_steps ===
+CME213 environment:
+  (none set)
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=128 heads=4 ff=512 batch=32
+Parameters: 222592 (869.50 KB)
+Training: epochs=1 lr=3.00e-04 max_steps=20 world_size=1 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Batches: total=536 local_per_rank=536 used_per_epoch=20 dropped=0
+  epoch 1 | step   20/20 | loss 3.6177
+Epoch 1: avg_logged_loss=3.6177  steps/rank=20  36ms  1153217 tok/s
+=== mpi_2_host_staged_20_steps ===
+MPI: 2 processes, 4 GPUs per node
+MPI gradient backend: portable host-staged buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  (none set)
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=128 heads=4 ff=512 batch=32
+Parameters: 222592 (869.50 KB)
+Training: epochs=1 lr=3.00e-04 max_steps=20 world_size=2 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=268 used_per_epoch=20 dropped=0
+  epoch 1 | step   20/20 | loss 3.5977
+Epoch 1: avg_logged_loss=3.5977  steps/rank=20  63ms  1297358 tok/s  avg_grad_sync=1.335ms  checksum_span=8.763e-08
+=== mpi_4_blocking_direct_20_steps ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=128 heads=4 ff=512 batch=32
+Parameters: 222592 (869.50 KB)
+Training: epochs=1 lr=3.00e-04 max_steps=20 world_size=4 sync_mode=blocking effective_sync=blocking bucket_kb=0 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=20 dropped=0
+  epoch 1 | step   20/20 | loss 3.6017
+Epoch 1: avg_logged_loss=3.6017  steps/rank=20  68ms  2392994 tok/s  avg_grad_sync=1.497ms  checksum_span=8.762e-07
+=== mpi_4_overlap_pinned_20_steps ===
+MPI: 4 processes, 4 GPUs per node
+MPI gradient backend: CUDA-aware direct device buffers
+MPI gradient averaging: post-allreduce scale kernels
+MPI thread level provided: 0
+MPI OpenMP comm thread: disabled
+CME213 environment:
+  CME213_CUDA_AWARE_MPI=1
+  GEMM requested=auto auto_policy=auto:cublas_tc_current_clean_benchmark
+Vocabulary size: 65
+Dataset: 1115394 tokens, vocab_size=65, seq_len=64, batch_size=32
+Model: vocab=65 seq=64 hidden=128 heads=4 ff=512 batch=32
+Parameters: 222592 (869.50 KB)
+Training: epochs=1 lr=3.00e-04 max_steps=20 world_size=4 sync_mode=overlap effective_sync=overlap bucket_kb=256 auto_overlap_max_mb=8.0
+Gradient averaging: post_allreduce
+Batches: total=536 local_per_rank=134 used_per_epoch=20 dropped=0
+  epoch 1 | step   20/20 | loss 3.6018
+Epoch 1: avg_logged_loss=3.6018  steps/rank=20  68ms  2397000 tok/s  avg_grad_start=0.550ms  avg_grad_finish=0.904ms  checksum_span=1.835e-06
+=== Benchmark Summary ===
+========================================
+  GEMM Benchmark: Naive vs Tiled
+========================================
+     M      N      K |  naive(ms)    GFLOP/s |  tiled(ms)    GFLOP/s | speedup
+------+------+------+------------+------------+------------+------------+--------
+    32     32     32 |     0.0028       23.0 |     0.0054       12.2 |   0.53x
+    64     64     64 |     0.0030      172.6 |     0.0051      102.4 |   0.59x
+   128    128    128 |     0.0056      754.2 |     0.0054      783.8 |   1.04x
+   256    256    256 |     0.0293     1146.2 |     0.0078     4305.1 |   3.76x
+   512    512    512 |     0.2023     1326.9 |     0.0265    10123.8 |   7.63x
+  1024   1024   1024 |     1.5777     1361.2 |     0.0654    32833.7 |  24.12x
+  2048    128    128 |     0.0554     1210.4 |     0.0114     5863.4 |   4.84x
+  2048    512    128 |     0.2052     1308.0 |     0.0143    18814.2 |  14.38x
+
+========================================
+  Attention Benchmark: Naive vs Tiled
+========================================
+  BH  seq  hd |  naive(ms)  tiled(ms) | speedup
+----+----+---+------------+------------+--------
+   4   32  32 |     0.0193     0.0677 |   0.29x
+   4   64  32 |     0.0427     0.1289 |   0.33x
+   4  128  32 |     0.0998     0.2526 |   0.40x
+   8   64  32 |     0.0500     0.1270 |   0.39x
+   8  128  64 |     0.6191     0.4847 |   1.28x
+
+========================================
+  LayerNorm Benchmark
+========================================
+  rows   cols |   time(ms)     BW(GB/s)
+------+------+------------+-------------
+  1024     64 |     0.0033        159.0
+  1024    128 |     0.0045        230.7
+  2048    128 |     0.0070        300.8
+  4096    128 |     0.0116        363.1
+  2048    256 |     0.0117        357.6
+  2048    512 |     0.0215        390.4
+
+========================================
+  Roofline Analysis (RTX 6000 Turing)
+========================================
+Peak FP32:     16.3 TFLOPS
+Peak BW:       672 GB/s
+Ridge point:   16300/672 = 24.3 FLOP/byte
+
+Kernel               |   AI(FLOP/B) |     Achieved |      Ceiling | Bound
+--------------------+-------------+-------------+-------------+----------
+GEMM tiled 512       |         85.3 |        2.1 T |       16.3 T | compute
+LayerNorm 2048x128   |          0.4 |    0.122 T   |        0.3 T | memory
+Attention 64x32      |          8.1 |   (varies)   |        5.5 T | memory
+
+==============================================================
+  Custom GEMM vs cuBLAS — Transformer-Relevant Matrix Sizes
+==============================================================
+Operation                |      M      N      K | custom(ms)    GFLOP/s | cuBLAS(ms)    GFLOP/s |   ratio
+------------------------+------+------+------+------------+------------+------------+------------+--------
+QKV/Wo proj              |   2048    128    128 |     0.0107     6253.4 |     0.0118     5673.8 |  110.2%
+FFN W1 fwd               |   2048    512    128 |     0.0137    19537.5 |     0.0236    11373.8 |  171.8%
+FFN W2 fwd               |   2048    128    512 |     0.0260    10305.4 |     0.0296     9064.5 |  113.7%
+Logits fwd               |   2048     65    128 |     0.0106     3210.4 |     0.0122     2796.9 |  114.8%
+Large GEMM               |   1024   1024   1024 |     0.0633    33937.6 |     0.1603    13398.6 |  253.3%
+XL GEMM                  |   2048   2048   2048 |     0.4792    35848.2 |     1.3149    13065.1 |  274.4%
+
+Note: ratio = cuBLAS_time / custom_time × 100%. Higher = custom is faster.
+      100% = same speed, <100% = cuBLAS is faster.
+
+=== FULL VALIDATION PASSED ===

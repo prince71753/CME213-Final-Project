@@ -1,0 +1,112 @@
+=== Environment ===
+hpcc-gpu-5-1
+0, Quadro RTX 6000, 23040 MiB
+1, Quadro RTX 6000, 23040 MiB
+2, Quadro RTX 6000, 23040 MiB
+3, Quadro RTX 6000, 23040 MiB
+Build cuda_12.3.r12.3/compiler.33492891_0
+=== Build ===
+make: 'build/test_gemm' is up to date.
+=== gemm_precision case=default_auto_cublas_tc requested_backend=auto strict_fp32=0 description=default_throughput_path_expected_to_use_auto_cublas_tc ===
+=== GEMM Correctness & Performance Test ===
+
+GEMM requested backend: auto
+GEMM auto policy: auto:cublas_tc_current_clean_benchmark
+CME213_STRICT_FP32: 0
+gemm_tiled tolerance: 5.0e-03
+
+M=64, N=64, K=64
+  naive  max error: 4.768372e-07  PASS
+  gemm_tiled(dispatch) max error: 7.152557e-07  PASS
+  naive:  0.003 ms (164.0 GFLOP/s)
+  tiled:  0.005 ms (100.4 GFLOP/s)  speedup: 0.61x
+
+M=128, N=128, K=128
+  naive  max error: 7.152557e-07  PASS
+  gemm_tiled(dispatch) max error: 1.430511e-06  PASS
+  naive:  0.006 ms (733.7 GFLOP/s)
+  tiled:  0.005 ms (772.8 GFLOP/s)  speedup: 1.05x
+
+M=256, N=256, K=256
+  naive  max error: 1.668930e-06  PASS
+  gemm_tiled(dispatch) max error: 3.576279e-06  PASS
+  naive:  0.030 ms (1129.0 GFLOP/s)
+  tiled:  0.008 ms (4202.7 GFLOP/s)  speedup: 3.72x
+
+M=512, N=512, K=512
+  naive  max error: 3.337860e-06  PASS
+  gemm_tiled(dispatch) max error: 2.421081e-03  PASS
+  naive:  0.205 ms (1307.6 GFLOP/s)
+  tiled:  0.023 ms (11915.6 GFLOP/s)  speedup: 9.11x
+
+case_status name=default_auto_cublas_tc status=0
+=== gemm_precision case=cublas_strict_fp32 requested_backend=cublas strict_fp32=1 description=library_fp32_reference_path_for_sanity ===
+=== GEMM Correctness & Performance Test ===
+
+GEMM requested backend: cublas
+GEMM auto policy: auto:cublas_tc_current_clean_benchmark
+CME213_STRICT_FP32: 1
+gemm_tiled tolerance: 1.0e-03
+
+M=64, N=64, K=64
+  naive  max error: 4.768372e-07  PASS
+  gemm_tiled(dispatch) max error: 7.152557e-07  PASS
+  naive:  0.003 ms (165.0 GFLOP/s)
+  tiled:  0.005 ms (96.9 GFLOP/s)  speedup: 0.59x
+
+M=128, N=128, K=128
+  naive  max error: 7.152557e-07  PASS
+  gemm_tiled(dispatch) max error: 1.430511e-06  PASS
+  naive:  0.006 ms (732.0 GFLOP/s)
+  tiled:  0.005 ms (799.7 GFLOP/s)  speedup: 1.09x
+
+M=256, N=256, K=256
+  naive  max error: 1.668930e-06  PASS
+  gemm_tiled(dispatch) max error: 3.576279e-06  PASS
+  naive:  0.030 ms (1127.8 GFLOP/s)
+  tiled:  0.008 ms (4236.7 GFLOP/s)  speedup: 3.76x
+
+M=512, N=512, K=512
+  naive  max error: 3.337860e-06  PASS
+  gemm_tiled(dispatch) max error: 9.536743e-06  PASS
+  naive:  0.205 ms (1308.5 GFLOP/s)
+  tiled:  0.027 ms (9818.1 GFLOP/s)  speedup: 7.50x
+
+case_status name=cublas_strict_fp32 status=0
+=== gemm_precision case=custom_strict_fp32 requested_backend=custom strict_fp32=1 description=custom_cuda_kernel_checked_against_cpu_at_1e-5_tolerance ===
+=== GEMM Correctness & Performance Test ===
+
+GEMM requested backend: custom
+GEMM auto policy: auto:cublas_tc_current_clean_benchmark
+CME213_STRICT_FP32: 1
+gemm_tiled tolerance: 1.0e-05
+
+M=64, N=64, K=64
+  naive  max error: 4.768372e-07  PASS
+  gemm_tiled(dispatch) max error: 4.768372e-07  PASS
+  naive:  0.003 ms (165.2 GFLOP/s)
+  tiled:  0.007 ms (74.6 GFLOP/s)  speedup: 0.45x
+
+M=128, N=128, K=128
+  naive  max error: 7.152557e-07  PASS
+  gemm_tiled(dispatch) max error: 7.152557e-07  PASS
+  naive:  0.006 ms (734.3 GFLOP/s)
+  tiled:  0.012 ms (349.2 GFLOP/s)  speedup: 0.48x
+
+M=256, N=256, K=256
+  naive  max error: 1.668930e-06  PASS
+  gemm_tiled(dispatch) max error: 1.668930e-06  PASS
+  naive:  0.030 ms (1132.3 GFLOP/s)
+  tiled:  0.022 ms (1501.3 GFLOP/s)  speedup: 1.33x
+
+M=512, N=512, K=512
+  naive  max error: 3.337860e-06  PASS
+  gemm_tiled(dispatch) max error: 3.337860e-06  PASS
+  naive:  0.205 ms (1310.1 GFLOP/s)
+  tiled:  0.047 ms (5664.0 GFLOP/s)  speedup: 4.32x
+
+case_status name=custom_strict_fp32 status=0
+=== Summarize ===
+Wrote results/gemm_precision_validation_89068.csv
+Wrote results/gemm_precision_validation_89068.md
+=== DONE job=89068 status=0 ===
